@@ -1,0 +1,50 @@
+{
+    "seo": {
+        "title": "Crystal Aura Massage & Spa | Thai Massage in Nimman, Chiang Mai",
+        "meta_description": "Authentic Thai massage & spa in Nimman, Chiang Mai. Aromatherapy, hot stone & signature treatments from ฿400. Rated 4.9★ by 500+ guests. Book online today.",
+        "canonical_url": "https://crystal-aura-final.vercel.app/",
+        "meta_keywords": "thai massage chiang mai, spa nimman, massage nimman, aromatherapy massage chiang mai, foot massage chiang mai, crystal aura spa",
+        "robots": "index, follow",
+        "og_title": "Crystal Aura Massage & Spa — Authentic Thai Wellness in Nimman, Chiang Mai",
+        "og_description": "Rated 4.9★ by 500+ guests. Traditional Thai massage, aromatherapy, hot stone & spa packages. Book online, pay at the spa.",
+        "og_image": "https://crystal-aura-final.vercel.app/og-cover.jpg",
+        "og_type": "website",
+        "twitter_card": "summary_large_image",
+        "language": "en",
+        "geo_region": "TH-50",
+        "geo_placename": "Chiang Mai",
+        "geo_position": "18.7986;98.9650",
+        "theme_color": "#0d1b14",
+        "sitemap_enabled": true,
+        "robots_txt_enabled": true,
+        "schema_local_business": true,
+        "schema_rating": true,
+        "schema_services": true
+    },
+    "business": {
+        "name": "Crystal Aura Massage & Spa",
+        "tagline": "A sanctuary of authentic Thai wellness nestled in the heart of Nimman, Chiang Mai.",
+        "phone": "095 993 2861",
+        "phone_intl": "+66959932861",
+        "email": "crystalauramassage@gmail.com",
+        "address": "22 Nimmana Haeminda Rd Lane 13, Suthep, Mueang Chiang Mai 50200",
+        "address_short": "22 Nimman Lane 13, Chiang Mai",
+        "hours": "Open Daily 09:00 – 23:30",
+        "hours_open": "09:00",
+        "hours_close": "23:30",
+        "founded": "2022",
+        "rating": "4.9",
+        "review_count": "500",
+        "price_range": "฿400–฿3000",
+        "latitude": "18.7986",
+        "longitude": "98.9650",
+        "facebook": "https://www.facebook.com/crystalauraspa",
+        "instagram": "https://www.instagram.com/crystalauraspa",
+        "whatsapp": "https://wa.me/66959932861",
+        "line": "https://line.me/R/ti/p/@crystalauraspa",
+        "tiktok": "https://www.tiktok.com/@crystalauraspa"
+    },
+    "admin": {
+        "password_hash": "$2y$10$REPLACED_ON_FIRST_RUN"
+    }
+}

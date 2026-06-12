@@ -1,0 +1,5 @@
+RewriteEngine On
+RewriteRule ^sitemap\.xml$ sitemap.php [L]
+RewriteRule ^robots\.txt$ robots.php [L]
+RewriteRule ^data/ - [F,L]
+DirectoryIndex index.php
