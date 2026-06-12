@@ -21,16 +21,64 @@ if (isset($_POST['do_login'])) {
 if (isset($_GET['logout'])) { session_destroy(); header('Location: admin.php'); exit; }
 $authed = !empty($_SESSION['auth']);
 
-// ---------- Save ----------
-$saved = false;
+// ---------- Blog storage ----------
+$POSTS_FILE = __DIR__ . '/data/posts.json';
+if (!file_exists($POSTS_FILE)) file_put_contents($POSTS_FILE, '[]');
+$POSTS = json_decode(file_get_contents($POSTS_FILE), true) ?: [];
+function save_posts($posts, $file) { file_put_contents($file, json_encode(array_values($posts), JSON_PRETTY_PRINT|JSON_UNESCAPED_SLASHES|JSON_UNESCAPED_UNICODE)); }
+function slugify($t) { $s = strtolower(trim(preg_replace('/[^a-z0-9]+/i', '-', $t), '-')); return $s ?: 'post-' . substr(md5($t . microtime()), 0, 6); }
+
+// ---------- Save (settings) ----------
+$saved = false; $notice = '';
 if ($authed && isset($_POST['do_save'])) {
   foreach ($_POST['seo'] ?? [] as $k => $v) if (array_key_exists($k, $S['seo'])) $S['seo'][$k] = trim($v);
   foreach (['sitemap_enabled','robots_txt_enabled','schema_local_business','schema_rating','schema_services'] as $t)
     $S['seo'][$t] = isset($_POST['seo'][$t]);
   foreach ($_POST['business'] ?? [] as $k => $v) if (array_key_exists($k, $S['business'])) $S['business'][$k] = trim($v);
+  if (!empty($_POST['new_email']) && filter_var($_POST['new_email'], FILTER_VALIDATE_EMAIL)) $S['admin']['email'] = trim($_POST['new_email']);
   if (!empty($_POST['new_password'])) $S['admin']['password_hash'] = password_hash($_POST['new_password'], PASSWORD_BCRYPT);
   file_put_contents($FILE, json_encode($S, JSON_PRETTY_PRINT|JSON_UNESCAPED_SLASHES|JSON_UNESCAPED_UNICODE));
   $saved = true;
+}
+// ---------- Reset credentials ----------
+if ($authed && isset($_POST['do_reset_creds'])) {
+  $S['admin']['email'] = 'admin@crystalauraspa.com';
+  $S['admin']['password_hash'] = '$2y$10$REPLACED_ON_FIRST_RUN'; // back to default password
+  file_put_contents($FILE, json_encode($S, JSON_PRETTY_PRINT|JSON_UNESCAPED_SLASHES|JSON_UNESCAPED_UNICODE));
+  $saved = true; $notice = 'Credentials reset — email: admin@crystalauraspa.com, password: crystal2026';
+}
+// ---------- Blog actions ----------
+$edit_post = null;
+if ($authed && isset($_POST['blog_save'])) {
+  $id = $_POST['post']['id'] ?: uniqid('p');
+  $slug = trim($_POST['post']['slug']) ?: slugify($_POST['post']['title']);
+  $slug = slugify($slug);
+  $new = [
+    'id' => $id,
+    'title' => trim($_POST['post']['title']),
+    'slug' => $slug,
+    'excerpt' => trim($_POST['post']['excerpt']),
+    'content' => $_POST['post']['content'],
+    'seo_title' => trim($_POST['post']['seo_title']) ?: trim($_POST['post']['title']) . ' | Crystal Aura Spa Blog',
+    'seo_description' => trim($_POST['post']['seo_description']) ?: mb_substr(trim($_POST['post']['excerpt']), 0, 158),
+    'seo_keywords' => trim($_POST['post']['seo_keywords']),
+    'published' => isset($_POST['post']['published']),
+    'date' => $_POST['post']['date'] ?: date('Y-m-d'),
+  ];
+  $found = false;
+  foreach ($POSTS as $i => $p) if ($p['id'] === $id) { $POSTS[$i] = $new; $found = true; break; }
+  if (!$found) array_unshift($POSTS, $new);
+  save_posts($POSTS, $POSTS_FILE);
+  $saved = true; $notice = 'Post saved' . ($new['published'] ? ' and published at /blog/' . $slug : ' as draft');
+}
+if ($authed && isset($_POST['blog_delete'])) {
+  $POSTS = array_filter($POSTS, fn($p) => $p['id'] !== $_POST['blog_delete']);
+  save_posts($POSTS, $POSTS_FILE);
+  $saved = true; $notice = 'Post deleted';
+  $POSTS = array_values($POSTS);
+}
+if ($authed && isset($_GET['edit'])) {
+  foreach ($POSTS as $p) if ($p['id'] === $_GET['edit']) { $edit_post = $p; break; }
 }
 $seo = $S['seo']; $biz = $S['business'];
 function e($v){ return htmlspecialchars($v ?? '', ENT_QUOTES, 'UTF-8'); }
@@ -131,6 +179,16 @@ a{text-decoration:none;color:inherit}
 .tab{display:none}.tab.active{display:block}
 .soon-box{background:#fff;border:1.5px dashed #d8cdb9;border-radius:12px;padding:48px;text-align:center;color:var(--muted)}
 .soon-box h3{color:var(--text);margin-bottom:8px}
+/* Dashboard overview */
+.ov-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:16px;margin-bottom:22px}
+.ov-card{background:#fff;border:1px solid #e8e0d2;border-radius:12px;padding:20px;cursor:pointer;transition:transform 0.25s,box-shadow 0.25s}
+.ov-card:hover{transform:translateY(-3px);box-shadow:0 10px 26px rgba(176,124,62,0.16)}
+.ov-num{font-size:30px;font-weight:800;color:var(--gold-dark)}
+.ov-label{font-weight:700;font-size:13px;margin-top:4px}
+.ov-sub{font-size:12px;color:var(--muted);margin-top:2px}
+.qa{display:flex;align-items:center;justify-content:space-between;padding:11px 14px;border:1px solid #efe7d8;border-radius:8px;margin-bottom:8px;font-size:13px;cursor:pointer;color:var(--text);transition:all 0.2s}
+.qa:hover{background:#faf4ea;border-color:var(--gold)}
+.qa span{color:var(--gold-dark);font-weight:700}
 </style>
 </head>
 <body>
@@ -163,6 +221,8 @@ a{text-decoration:none;color:inherit}
     <nav class="sb-nav">
       <div class="sb-item active" data-tab="dashboard">🏠 <span class="lbl">Dashboard</span></div>
       <div class="sb-item" data-tab="seo">🔍 <span class="lbl">SEO Setup</span></div>
+      <div class="sb-item" data-tab="seoscore">📊 <span class="lbl">SEO Score</span></div>
+      <div class="sb-item" data-tab="blog">✍️ <span class="lbl">Blog</span><span class="badge"><?= count($POSTS) ?></span></div>
       <div class="sb-item" data-tab="settings">⚙️ <span class="lbl">Settings</span></div>
       <div class="sb-item soon">📝 <span class="lbl">Content</span><span class="badge">SOON</span></div>
     </nav>
@@ -179,10 +239,74 @@ a{text-decoration:none;color:inherit}
         <button class="btn btn-primary" name="do_save" value="1">💾 Save Changes</button>
       </div>
     </div>
-    <?php if ($saved): ?><div class="saved-note">✅ Settings saved — changes are live on the site immediately.</div><?php endif; ?>
+    <?php if ($saved): ?><div class="saved-note">✅ <?= e($notice ?: 'Settings saved — changes are live on the site immediately.') ?></div><?php endif; ?>
 
-    <!-- ============ DASHBOARD TAB ============ -->
+    <!-- ============ DASHBOARD TAB (overview of everything) ============ -->
     <div class="tab active" id="tab-dashboard">
+      <div class="ov-grid">
+        <div class="ov-card" data-go="seoscore">
+          <div class="ov-num" style="color:var(--green)"><?= $passCount ?>/20</div>
+          <div class="ov-label">SEO Score</div>
+          <div class="ov-sub"><?= $passCount === 20 ? 'All optimizations live ✓' : (20-$passCount).' need attention' ?></div>
+        </div>
+        <div class="ov-card" data-go="blog">
+          <div class="ov-num"><?= count($POSTS) ?></div>
+          <div class="ov-label">Blog Posts</div>
+          <div class="ov-sub"><?= count(array_filter($POSTS, fn($p)=>$p['published'])) ?> published · <?= count(array_filter($POSTS, fn($p)=>!$p['published'])) ?> drafts</div>
+        </div>
+        <div class="ov-card">
+          <div class="ov-num">⭐ <?= e($biz['rating']) ?></div>
+          <div class="ov-label">Google Rating</div>
+          <div class="ov-sub"><?= e($biz['review_count']) ?>+ reviews</div>
+        </div>
+        <div class="ov-card">
+          <div class="ov-num">🕐</div>
+          <div class="ov-label">Open Daily</div>
+          <div class="ov-sub"><?= e($biz['hours_open']) ?> – <?= e($biz['hours_close']) ?></div>
+        </div>
+      </div>
+
+      <div class="grid2" style="gap:20px;align-items:start">
+        <div class="card" style="margin-bottom:0">
+          <div class="card-h">🏢 Business at a Glance</div>
+          <div class="card-b">
+            <div class="field"><label>Business</label><div><?= e($biz['name']) ?></div></div>
+            <div class="field"><label>Phone</label><div><?= e($biz['phone']) ?></div></div>
+            <div class="field"><label>Email</label><div><?= e($biz['email']) ?></div></div>
+            <div class="field"><label>Address</label><div><?= e($biz['address_short']) ?></div></div>
+          </div>
+        </div>
+        <div class="card" style="margin-bottom:0">
+          <div class="card-h">⚡ Quick Actions</div>
+          <div class="card-b">
+            <div class="qa" data-go="seo">🔍 Edit SEO settings <span>→</span></div>
+            <div class="qa" data-go="seoscore">📊 View 20-point SEO checklist <span>→</span></div>
+            <div class="qa" data-go="blog">✍️ Write a blog post <span>→</span></div>
+            <div class="qa" data-go="settings">⚙️ Business &amp; account settings <span>→</span></div>
+            <a class="qa" href="index.php" target="_blank" style="display:flex">🌐 View live site <span>↗</span></a>
+            <a class="qa" href="sitemap.xml" target="_blank" style="display:flex">🗺 View sitemap <span>↗</span></a>
+          </div>
+        </div>
+      </div>
+
+      <div class="card" style="margin-top:20px">
+        <div class="card-h">✍️ Recent Blog Posts</div>
+        <?php if (empty($POSTS)): ?>
+          <div class="card-b" style="color:var(--muted)">No posts yet — open the Blog tab to write your first post.</div>
+        <?php else: ?>
+        <ul class="checklist">
+          <?php foreach (array_slice($POSTS, 0, 5) as $p): ?>
+          <li><span class="ok <?= $p['published'] ? '' : 'warn' ?>"><?= $p['published'] ? '✓' : '○' ?></span>
+              <?= e($p['title']) ?>
+              <span style="margin-left:auto;color:#a39782;font-size:12px"><?= e($p['date']) ?> · <?= $p['published'] ? 'Published' : 'Draft' ?></span></li>
+          <?php endforeach; ?>
+        </ul>
+        <?php endif; ?>
+      </div>
+    </div>
+
+    <!-- ============ SEO SCORE TAB ============ -->
+    <div class="tab" id="tab-seoscore">
       <div class="score-card">
         <div class="score-num"><?= $passCount ?>/20</div>
         <div style="flex:1">
@@ -201,14 +325,62 @@ a{text-decoration:none;color:inherit}
           <?php endforeach; ?>
         </ul>
       </div>
+    </div>
+
+    <!-- ============ BLOG TAB ============ -->
+    <div class="tab" id="tab-blog">
       <div class="card">
-        <div class="card-h">🏢 Business at a Glance</div>
-        <div class="card-b grid2">
-          <div class="field"><label>Business</label><div><?= e($biz['name']) ?></div></div>
-          <div class="field"><label>Rating</label><div><?= e($biz['rating']) ?> ★ · <?= e($biz['review_count']) ?>+ reviews</div></div>
-          <div class="field"><label>Phone</label><div><?= e($biz['phone']) ?></div></div>
-          <div class="field"><label>Hours</label><div><?= e($biz['hours']) ?></div></div>
+        <div class="card-h">✍️ <?= $edit_post ? 'Edit Post' : 'New Blog Post' ?></div>
+        <div class="card-b">
+          <input type="hidden" name="post[id]" form="blogform" value="<?= e($edit_post['id'] ?? '') ?>">
+          <input type="hidden" name="post[date]" form="blogform" value="<?= e($edit_post['date'] ?? '') ?>">
+          <div class="field"><label>Post Title</label>
+            <input type="text" name="post[title]" form="blogform" value="<?= e($edit_post['title'] ?? '') ?>" placeholder="e.g. 5 Benefits of Traditional Thai Massage"></div>
+          <div class="grid2">
+            <div class="field"><label>URL Slug</label>
+              <input type="text" name="post[slug]" form="blogform" value="<?= e($edit_post['slug'] ?? '') ?>" placeholder="auto-generated from title if blank">
+              <div class="hint">Post will live at /blog/your-slug</div></div>
+            <div class="field"><label style="margin-top:14px"><input type="checkbox" name="post[published]" form="blogform" <?= !empty($edit_post['published']) ? 'checked' : '' ?> style="width:16px;height:16px;accent-color:var(--gold-dark)"> &nbsp;Published (visible on site)</label></div>
+          </div>
+          <div class="field"><label>Excerpt</label>
+            <textarea name="post[excerpt]" form="blogform" placeholder="Short summary shown on the blog list page"><?= e($edit_post['excerpt'] ?? '') ?></textarea></div>
+          <div class="field"><label>Content</label>
+            <textarea name="post[content]" form="blogform" style="min-height:220px" placeholder="Write your post... basic HTML allowed: <h2>, <p>, <strong>, <ul><li>, <img>"><?= e($edit_post['content'] ?? '') ?></textarea></div>
         </div>
+      </div>
+      <div class="card">
+        <div class="card-h">🔍 Post SEO Settings</div>
+        <div class="card-b">
+          <div class="field"><label>SEO Title</label>
+            <input type="text" name="post[seo_title]" form="blogform" value="<?= e($edit_post['seo_title'] ?? '') ?>" placeholder="Defaults to: Post Title | Crystal Aura Spa Blog"></div>
+          <div class="field"><label>SEO Meta Description</label>
+            <textarea name="post[seo_description]" form="blogform" placeholder="Defaults to the excerpt (max 160 chars)"><?= e($edit_post['seo_description'] ?? '') ?></textarea></div>
+          <div class="field"><label>SEO Keywords</label>
+            <input type="text" name="post[seo_keywords]" form="blogform" value="<?= e($edit_post['seo_keywords'] ?? '') ?>" placeholder="thai massage benefits, chiang mai spa tips"></div>
+          <button class="btn btn-primary" name="blog_save" value="1" form="blogform">💾 Save Post</button>
+          <?php if ($edit_post): ?><a class="btn btn-ghost" href="admin.php" style="display:inline-block;margin-left:8px">Cancel Edit</a><?php endif; ?>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-h">📚 All Posts (<?= count($POSTS) ?>)</div>
+        <?php if (empty($POSTS)): ?>
+          <div class="card-b" style="color:var(--muted)">No posts yet.</div>
+        <?php else: ?>
+        <ul class="checklist">
+          <?php foreach ($POSTS as $p): ?>
+          <li>
+            <span class="ok <?= $p['published'] ? '' : 'warn' ?>"><?= $p['published'] ? '✓' : '○' ?></span>
+            <div style="flex:1;min-width:0">
+              <div style="font-weight:600"><?= e($p['title']) ?></div>
+              <div style="font-size:11.5px;color:#a39782">/blog/<?= e($p['slug']) ?> · <?= e($p['date']) ?> · <?= $p['published'] ? 'Published' : 'Draft' ?></div>
+            </div>
+            <?php if ($p['published']): ?><a href="blog/<?= e($p['slug']) ?>" target="_blank" style="color:var(--gold-dark);font-size:12px;font-weight:700">View ↗</a><?php endif; ?>
+            <a href="admin.php?edit=<?= e($p['id']) ?>#tab-blog" style="color:var(--gold-dark);font-size:12px;font-weight:700">Edit</a>
+            <button class="btn btn-ghost" style="padding:5px 12px;font-size:11px;color:#c0392b" name="blog_delete" value="<?= e($p['id']) ?>" form="blogform" onclick="return confirm('Delete this post?')">Delete</button>
+          </li>
+          <?php endforeach; ?>
+        </ul>
+        <?php endif; ?>
       </div>
     </div>
 
@@ -304,27 +476,45 @@ a{text-decoration:none;color:inherit}
         </div>
       </div>
       <div class="card">
-        <div class="card-h">🔐 Security</div>
+        <div class="card-h">🔐 Account &amp; Security</div>
         <div class="card-b">
-          <div class="field"><label>Change Admin Password</label>
-            <input type="text" name="new_password" placeholder="Leave blank to keep current password">
-            <div class="hint">Default first-run password: crystal2026 — change it after first login.</div></div>
+          <div class="grid2">
+            <div class="field"><label>Admin Email (login)</label>
+              <input type="text" name="new_email" value="<?= e($S['admin']['email'] ?? '') ?>">
+              <div class="hint">Used to sign in to this dashboard.</div></div>
+            <div class="field"><label>Change Password</label>
+              <input type="text" name="new_password" placeholder="Leave blank to keep current password">
+              <div class="hint">Default first-run password: crystal2026.</div></div>
+          </div>
+          <div style="border-top:1px solid #f0e9dc;margin-top:6px;padding-top:16px">
+            <button class="btn btn-ghost" name="do_reset_creds" value="1" onclick="return confirm('Reset login to defaults?\n\nEmail: admin@crystalauraspa.com\nPassword: crystal2026')" style="color:#c0392b;border-color:#e8c5bd">↺ Reset login to defaults</button>
+            <span class="hint" style="margin-left:10px">Forgot the password? This restores admin@crystalauraspa.com / crystal2026.</span>
+          </div>
         </div>
       </div>
     </div>
   </main>
 </div>
 </form>
+<form id="blogform" method="post" action="admin.php"></form>
 <script>
+function goTab(name){
+  var item = document.querySelector('.sb-item[data-tab="' + name + '"]');
+  if (!item) return;
+  document.querySelectorAll('.sb-item').forEach(i=>i.classList.remove('active'));
+  item.classList.add('active');
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById('tab-' + name).classList.add('active');
+  document.getElementById('pageTitle').textContent = item.querySelector('.lbl').textContent;
+}
 document.querySelectorAll('.sb-item[data-tab]').forEach(function(item){
-  item.addEventListener('click', function(){
-    document.querySelectorAll('.sb-item').forEach(i=>i.classList.remove('active'));
-    item.classList.add('active');
-    document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
-    document.getElementById('tab-' + item.dataset.tab).classList.add('active');
-    document.getElementById('pageTitle').textContent = item.querySelector('.lbl').textContent;
-  });
+  item.addEventListener('click', function(){ goTab(item.dataset.tab); });
 });
+document.querySelectorAll('[data-go]').forEach(function(el){
+  el.addEventListener('click', function(){ goTab(el.dataset.go); });
+});
+// Open Blog tab when editing a post or after a blog action
+if (location.search.indexOf('edit=') > -1 || location.hash === '#tab-blog') goTab('blog');
 </script>
 <?php endif; ?>
 </body>
