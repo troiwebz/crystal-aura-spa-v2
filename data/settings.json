@@ -47,5 +47,89 @@
     "admin": {
         "password_hash": "$2y$10$REPLACED_ON_FIRST_RUN",
         "email": "admin@crystalauraspa.com"
+    },
+    "schema": {
+        "business_type": "DaySpa",
+        "breadcrumbs": true,
+        "services": [
+            {
+                "name": "Traditional Thai Massage",
+                "price": "400",
+                "duration": "60"
+            },
+            {
+                "name": "Aromatherapy Massage",
+                "price": "790",
+                "duration": "60"
+            },
+            {
+                "name": "Foot Massage",
+                "price": "400",
+                "duration": "60"
+            },
+            {
+                "name": "Hot Stone Massage",
+                "price": "990",
+                "duration": "60"
+            },
+            {
+                "name": "Deep Tissue Massage",
+                "price": "890",
+                "duration": "60"
+            },
+            {
+                "name": "Body Scrub",
+                "price": "900",
+                "duration": "60"
+            },
+            {
+                "name": "Anti Aging Facial (Gua Sha)",
+                "price": "790",
+                "duration": "60"
+            },
+            {
+                "name": "Thai Bliss Package",
+                "price": "1350",
+                "duration": "150"
+            }
+        ],
+        "faqs": [
+            {
+                "q": "Do I need to book in advance?",
+                "a": "Walk-ins are welcome, but we recommend booking online or via WhatsApp to guarantee your preferred time. Bookings are confirmed within 2 hours."
+            },
+            {
+                "q": "How do I pay?",
+                "a": "No upfront payment is needed. Simply pay at the spa before your treatment — we accept cash (THB), PromptPay, and major payment methods."
+            },
+            {
+                "q": "Where is Crystal Aura Massage & Spa located?",
+                "a": "We are at 22 Nimmana Haeminda Rd Lane 13, Suthep, Mueang Chiang Mai 50200, in the heart of the Nimman area."
+            },
+            {
+                "q": "What are your opening hours?",
+                "a": "We are open every day from 09:00 to 23:30, including weekends and holidays."
+            }
+        ]
+    },
+    "onpage": {
+        "primary_keyword": "thai massage chiang mai",
+        "secondary_keywords": "spa nimman, aromatherapy massage, foot massage chiang mai, massage nimman",
+        "alt_default": "Crystal Aura Massage & Spa Chiang Mai"
+    },
+    "performance": {
+        "lazy_images": true,
+        "defer_videos": true,
+        "preconnect_fonts": true,
+        "strip_comments": true,
+        "dns_prefetch": true
+    },
+    "technical": {
+        "hreflang": "en",
+        "redirects": [],
+        "noindex_paths": [
+            "/admin.php"
+        ],
+        "custom_404": true
     }
 }

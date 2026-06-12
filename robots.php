@@ -6,5 +6,8 @@ $url = rtrim($S['seo']['canonical_url'], '/');
 echo "User-agent: *\n";
 echo "Allow: /\n";
 echo "Disallow: /admin.php\n";
-echo "Disallow: /data/\n\n";
-echo "Sitemap: {$url}/sitemap.xml\n";
+echo "Disallow: /data/\n";
+foreach (($S['technical']['noindex_paths'] ?? []) as $p) {
+  if ($p && $p !== '/admin.php') echo "Disallow: " . $p . "\n";
+}
+echo "\nSitemap: {$url}/sitemap.xml\n";

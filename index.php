@@ -1,7 +1,23 @@
 <?php
 $S = json_decode(file_get_contents(__DIR__ . '/data/settings.json'), true);
 $seo = $S['seo']; $biz = $S['business'];
+$schema = $S['schema'] ?? []; $perf = $S['performance'] ?? []; $tech = $S['technical'] ?? [];
 function e($v){ return htmlspecialchars($v, ENT_QUOTES, 'UTF-8'); }
+// ---- Performance SEO post-processor (settings-driven) ----
+ob_start(function($html) use ($perf) {
+  if (!empty($perf['lazy_images'])) {
+    // lazy-load all imgs that don't already declare loading
+    $html = preg_replace('/<img(?![^>]*loading=)/i', '<img loading="lazy" decoding="async"', $html);
+  }
+  if (!empty($perf['defer_videos'])) {
+    // don't download videos until needed (autoplay videos still start once visible)
+    $html = preg_replace('/<video(?![^>]*preload=)/i', '<video preload="metadata"', $html);
+  }
+  if (!empty($perf['strip_comments'])) {
+    $html = preg_replace('/<!--(?!\[if).*?-->/s', '', $html);
+  }
+  return $html;
+});
 ?><!DOCTYPE html>
 <html lang="<?= e($seo['language']) ?>">
 <head>
@@ -46,10 +62,30 @@ function e($v){ return htmlspecialchars($v, ENT_QUOTES, 'UTF-8'); }
 ] + ($seo['schema_rating'] ? ['aggregateRating'=>['@type'=>'AggregateRating','ratingValue'=>$biz['rating'],'reviewCount'=>$biz['review_count'],'bestRating'=>'5']] : []), JSON_UNESCAPED_SLASHES|JSON_UNESCAPED_UNICODE|JSON_PRETTY_PRINT) ?>
 </script>
 <?php endif; ?>
-<?php if ($seo['schema_services']): ?>
+<?php if ($seo['schema_services'] && !empty($schema['services'])): ?>
 <script type="application/ld+json">
-<?= json_encode(['@context'=>'https://schema.org','@type'=>'ItemList','name'=>'Spa Treatments','itemListElement'=>array_map(function($s,$i){return ['@type'=>'ListItem','position'=>$i+1,'item'=>['@type'=>'Service','name'=>$s,'provider'=>['@type'=>'DaySpa','name'=>'Crystal Aura Massage & Spa']]];}, $svc = ['Traditional Thai Massage','Aromatherapy Massage','Foot Massage','Hot Stone Massage','Deep Tissue Massage','Body Scrub','Facial Treatment','Spa Packages'], array_keys($svc))], JSON_UNESCAPED_SLASHES|JSON_UNESCAPED_UNICODE) ?>
+<?= json_encode(['@context'=>'https://schema.org','@type'=>'ItemList','name'=>'Spa Treatments','itemListElement'=>array_map(function($s,$i) use ($schema,$seo) {
+  return ['@type'=>'ListItem','position'=>$i+1,'item'=>[
+    '@type'=>'Service','name'=>$s['name'],
+    'provider'=>['@type'=>$schema['business_type'] ?? 'DaySpa','name'=>'Crystal Aura Massage & Spa'],
+    'offers'=>['@type'=>'Offer','price'=>$s['price'],'priceCurrency'=>'THB','url'=>$seo['canonical_url'].'#pricing'],
+  ]];
+}, $schema['services'], array_keys($schema['services']))], JSON_UNESCAPED_SLASHES|JSON_UNESCAPED_UNICODE) ?>
 </script>
+<?php endif; ?>
+<?php if (!empty($schema['faqs'])): ?>
+<script type="application/ld+json">
+<?= json_encode(['@context'=>'https://schema.org','@type'=>'FAQPage','mainEntity'=>array_map(fn($f)=>['@type'=>'Question','name'=>$f['q'],'acceptedAnswer'=>['@type'=>'Answer','text'=>$f['a']]], $schema['faqs'])], JSON_UNESCAPED_SLASHES|JSON_UNESCAPED_UNICODE) ?>
+</script>
+<?php endif; ?>
+<?php if (!empty($schema['breadcrumbs'])): ?>
+<script type="application/ld+json">
+<?= json_encode(['@context'=>'https://schema.org','@type'=>'BreadcrumbList','itemListElement'=>[['@type'=>'ListItem','position'=>1,'name'=>'Home','item'=>$seo['canonical_url']],['@type'=>'ListItem','position'=>2,'name'=>'Treatments & Rates','item'=>$seo['canonical_url'].'#pricing'],['@type'=>'ListItem','position'=>3,'name'=>'Book','item'=>$seo['canonical_url'].'#booking']]], JSON_UNESCAPED_SLASHES|JSON_UNESCAPED_UNICODE) ?>
+</script>
+<?php endif; ?>
+<?php if (!empty($tech['hreflang'])): ?>
+<link rel="alternate" hreflang="<?= e($tech['hreflang']) ?>" href="<?= e($seo['canonical_url']) ?>">
+<link rel="alternate" hreflang="x-default" href="<?= e($seo['canonical_url']) ?>">
 <?php endif; ?>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -152,7 +188,7 @@ h2.section-title.white::after{background:linear-gradient(90deg,rgba(255,255,255,
 .slide-overlay{position:absolute;inset:0}
 .slide-content{position:relative;z-index:5;text-align:center;max-width:800px;padding:0 24px}
 .slide-badge{display:inline-block;font-size:11px;font-weight:700;letter-spacing:0.3em;text-transform:uppercase;color:var(--gold);border:1px solid var(--gold);padding:6px 20px;margin-bottom:20px}
-.slide-content h1{font-family:var(--font-serif);font-size:clamp(2.5rem,6vw,4.5rem);font-weight:300;color:#fff;line-height:1.15;margin-bottom:20px}
+.slide-content h1,.slide-content h2.slide-h{font-family:var(--font-serif);font-size:clamp(2.5rem,6vw,4.5rem);font-weight:300;color:#fff;line-height:1.15;margin-bottom:20px}
 .slide-content h1 em{font-style:italic;color:var(--gold-light)}
 .hero-type-cursor{color:#c9a96e;font-style:normal;font-weight:300;animation:blink-cursor 0.75s step-end infinite}
 .slide-1-type-cursor{color:var(--gold-light);font-style:normal;font-weight:300;animation:blink-cursor 0.75s step-end infinite}
@@ -905,7 +941,7 @@ a.f2-contact-row:hover{color:#b07c3e}
   #hero{height:100svh;min-height:580px}
   .hero-arrows{display:none}
   .slide-content{padding:0 24px}
-  .slide-content h1{font-size:clamp(2rem,8vw,3.2rem) !important}
+  .slide-content h1,.slide-content h2.slide-h{font-size:clamp(2rem,8vw,3.2rem) !important}
   .slide-content p{font-size:14px !important}
   .slide-btns{flex-direction:column;gap:10px;align-items:center}
   .slide-btns a{width:200px;text-align:center}
@@ -1005,7 +1041,7 @@ a.f2-contact-row:hover{color:#b07c3e}
   .trust-icon-wrap{width:56px;height:56px}
 }
 @media(max-width:400px){
-  .slide-content h1{font-size:1.9rem !important}
+  .slide-content h1,.slide-content h2.slide-h{font-size:1.9rem !important}
   .stat-item{padding:20px 8px}
   .pkg-card{padding:24px}
   .offer-card{padding:20px}
@@ -1162,7 +1198,7 @@ a.f2-contact-row:hover{color:#b07c3e}
   <div class="slide" id="slide-1">
     <div class="slide-content" style="position:relative;z-index:10;">
       <div class="slide-badge">Since 2022</div>
-      <h1>Authentic <em><span id="ht2">Thai Wellness</span><span class="slide-1-type-cursor">|</span></em></h1>
+      <h2 class="slide-h">Authentic <em><span id="ht2">Thai Wellness</span><span class="slide-1-type-cursor">|</span></em></h2>
       <div class="slide-stats">
         <div class="slide-stat"><div class="slide-stat-num">3+</div><div class="slide-stat-label">Years</div></div>
         <div class="slide-stat"><div class="slide-stat-num">5,000+</div><div class="slide-stat-label">Clients</div></div>
@@ -1176,7 +1212,7 @@ a.f2-contact-row:hover{color:#b07c3e}
   <div class="slide" id="slide-2">
     <div class="slide-content" style="position:relative;z-index:10;">
       <span class="section-label" style="color:var(--gold-light)">Welcome to Our Sanctuary</span>
-      <h1>A Sanctuary of <em><span id="ht3">Tranquility</span><span class="slide-1-type-cursor">|</span></em></h1>
+      <h2 class="slide-h">A Sanctuary of <em><span id="ht3">Tranquility</span><span class="slide-1-type-cursor">|</span></em></h2>
       <p>Nestled in the heart of Nimman, Chiang Mai — your escape from the everyday.</p>
       <div class="slide-btns">
         <a href="#booking" class="btn btn-gold">Book Now</a>

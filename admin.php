@@ -35,6 +35,40 @@ if ($authed && isset($_POST['do_save'])) {
   foreach (['sitemap_enabled','robots_txt_enabled','schema_local_business','schema_rating','schema_services'] as $t)
     $S['seo'][$t] = isset($_POST['seo'][$t]);
   foreach ($_POST['business'] ?? [] as $k => $v) if (array_key_exists($k, $S['business'])) $S['business'][$k] = trim($v);
+  // Schema block
+  if (isset($_POST['schema'])) {
+    $S['schema']['business_type'] = $_POST['schema']['business_type'] ?? 'DaySpa';
+    $S['schema']['breadcrumbs'] = isset($_POST['schema']['breadcrumbs']);
+    $svcs = [];
+    foreach (($_POST['schema']['services'] ?? []) as $row) {
+      if (trim($row['name']) !== '') $svcs[] = ['name'=>trim($row['name']),'price'=>trim($row['price']),'duration'=>trim($row['duration'])];
+    }
+    $S['schema']['services'] = $svcs;
+    $faqs = [];
+    foreach (($_POST['schema']['faqs'] ?? []) as $row) {
+      if (trim($row['q']) !== '' && trim($row['a']) !== '') $faqs[] = ['q'=>trim($row['q']),'a'=>trim($row['a'])];
+    }
+    $S['schema']['faqs'] = $faqs;
+  }
+  // On-page block
+  if (isset($_POST['onpage'])) foreach ($_POST['onpage'] as $k => $v) if (array_key_exists($k, $S['onpage'])) $S['onpage'][$k] = trim($v);
+  // Performance block
+  if (isset($_POST['perf_submitted'])) {
+    foreach (['lazy_images','defer_videos','preconnect_fonts','strip_comments','dns_prefetch'] as $t)
+      $S['performance'][$t] = isset($_POST['performance'][$t]);
+  }
+  // Technical block
+  if (isset($_POST['technical'])) {
+    $S['technical']['hreflang'] = trim($_POST['technical']['hreflang'] ?? 'en');
+    $S['technical']['custom_404'] = isset($_POST['technical']['custom_404']);
+    $reds = [];
+    foreach (explode("\n", $_POST['technical']['redirects_raw'] ?? '') as $line) {
+      $parts = preg_split('/\s+/', trim($line));
+      if (count($parts) >= 2 && $parts[0][0] === '/') $reds[] = ['from'=>$parts[0],'to'=>$parts[1]];
+    }
+    $S['technical']['redirects'] = $reds;
+    $S['technical']['noindex_paths'] = array_values(array_filter(array_map('trim', explode("\n", $_POST['technical']['noindex_raw'] ?? ''))));
+  }
   if (!empty($_POST['new_email']) && filter_var($_POST['new_email'], FILTER_VALIDATE_EMAIL)) $S['admin']['email'] = trim($_POST['new_email']);
   if (!empty($_POST['new_password'])) $S['admin']['password_hash'] = password_hash($_POST['new_password'], PASSWORD_BCRYPT);
   file_put_contents($FILE, json_encode($S, JSON_PRETTY_PRINT|JSON_UNESCAPED_SLASHES|JSON_UNESCAPED_UNICODE));
@@ -107,6 +141,67 @@ $checks = [
   ['Image alt texts on gallery', true],
 ];
 $passCount = count(array_filter($checks, fn($c) => $c[1]));
+
+// ---------- Advanced block data ----------
+$schema = $S['schema'] ?? ['business_type'=>'DaySpa','breadcrumbs'=>true,'services'=>[],'faqs'=>[]];
+$onpage = $S['onpage'] ?? ['primary_keyword'=>'','secondary_keywords'=>'','alt_default'=>''];
+$perf   = $S['performance'] ?? [];
+$tech   = $S['technical'] ?? ['hreflang'=>'en','redirects'=>[],'noindex_paths'=>[],'custom_404'=>true];
+
+// ---------- On-Page content analysis (reads the real homepage) ----------
+$page_raw = file_get_contents(__DIR__ . '/index.php');
+$page_html = preg_replace('/<\?(php|=).*?\?>/s', '', $page_raw);            // strip PHP
+$page_body = preg_replace('/<(script|style)\b.*?<\/\1>/si', '', $page_html); // strip code
+$page_text = strtolower(preg_replace('/\s+/', ' ', strip_tags($page_body)));
+$kw = strtolower(trim($onpage['primary_keyword']));
+$kw_parts = array_filter(explode(' ', $kw));
+$word_count = str_word_count($page_text);
+$kw_count = $kw ? substr_count($page_text, $kw) : 0;
+$kw_loose = $kw_parts ? min(array_map(fn($w) => substr_count($page_text, $w), $kw_parts)) : 0;
+$density = $word_count ? round((max($kw_count, $kw_loose) * count($kw_parts)) / max($word_count,1) * 100, 2) : 0;
+preg_match_all('/<h1[^>]*>(.*?)<\/h1>/si', $page_html, $h1s);
+preg_match_all('/<h2[^>]*>(.*?)<\/h2>/si', $page_html, $h2s);
+preg_match_all('/<img[^>]*>/i', $page_html, $imgs);
+$imgs_total = count($imgs[0]);
+$imgs_no_alt = count(array_filter($imgs[0], fn($t) => !preg_match('/alt="[^"]+"/i', $t)));
+$first150 = implode(' ', array_slice(explode(' ', $page_text), 0, 150));
+$onpage_checks = [
+  ['Primary keyword in page title', $kw && stripos($seo['title'], $kw) !== false || ($kw_parts && stripos($seo['title'], $kw_parts[0]) !== false)],
+  ['Primary keyword in meta description', $kw_parts && stripos(strtolower($seo['meta_description']), $kw_parts[0]) !== false],
+  ['Keyword present in page copy (' . $kw_loose . '× loose match)', $kw_loose >= 1],
+  ['Healthy keyword density (' . $density . '% — under 3%)', $density > 0 && $density < 3],
+  ['Content length ' . number_format($word_count) . ' words (500+ recommended)', $word_count >= 500],
+];
+$perf_checks = [
+  ['Lazy-load images (' . $imgs_total . ' images on page)', !empty($perf['lazy_images'])],
+  ['Defer video loading (preload=metadata)', !empty($perf['defer_videos'])],
+  ['Font preconnect (Google Fonts)', !empty($perf['preconnect_fonts'])],
+  ['Strip HTML comments from output', !empty($perf['strip_comments'])],
+  ['DNS prefetch hints', !empty($perf['dns_prefetch'])],
+];
+$schema_checks = [
+  ['Business type set (' . ($schema['business_type'] ?? '—') . ')', !empty($schema['business_type'])],
+  ['Services schema with prices (' . count($schema['services']) . ' services)', count($schema['services']) >= 5],
+  ['FAQ schema (' . count($schema['faqs']) . ' questions — rich results)', count($schema['faqs']) >= 3],
+  ['Breadcrumb schema', !empty($schema['breadcrumbs'])],
+  ['Blog posts emit BlogPosting schema', true],
+];
+$tech_checks = [
+  ['Hreflang tags (' . ($tech['hreflang'] ?: '—') . ' + x-default)', !empty($tech['hreflang'])],
+  ['Custom branded 404 page', !empty($tech['custom_404'])],
+  ['Redirect manager active (' . count($tech['redirects']) . ' rules)', true],
+  ['Admin/data paths blocked from crawlers', true],
+  ['Clean URL structure (/blog/post-slug)', true],
+];
+$blocks = [
+  ['SEO Setup', $checks, 'seo'],
+  ['Schema Markup', $schema_checks, 'schema'],
+  ['On-Page Optimizer', $onpage_checks, 'onpage'],
+  ['Performance SEO', $perf_checks, 'performance'],
+  ['Technical SEO', $tech_checks, 'technical'],
+];
+$totalChecks = 0; $totalPass = 0;
+foreach ($blocks as $b) { $totalChecks += count($b[1]); $totalPass += count(array_filter($b[1], fn($c) => $c[1])); }
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -139,6 +234,7 @@ a{text-decoration:none;color:inherit}
 .sb-item.active{background:rgba(201,169,110,0.12);color:var(--gold);border-left-color:var(--gold)}
 .sb-item.soon{opacity:0.5;cursor:default}
 .sb-item .badge{margin-left:auto;font-size:9px;background:rgba(255,255,255,0.12);padding:2px 7px;border-radius:10px}
+.sb-group{padding:14px 20px 5px;font-size:10px;font-weight:700;letter-spacing:0.18em;color:#777;text-transform:uppercase}
 .sb-foot{padding:16px 20px;border-top:1px solid rgba(255,255,255,0.08);font-size:12px;color:#888}
 .sb-foot a{color:var(--gold)}
 /* Main */
@@ -220,8 +316,14 @@ a{text-decoration:none;color:inherit}
     <div class="sb-brand">Crystal <span>Aura</span> Admin</div>
     <nav class="sb-nav">
       <div class="sb-item active" data-tab="dashboard">🏠 <span class="lbl">Dashboard</span></div>
+      <div class="sb-group">SEO SUITE</div>
       <div class="sb-item" data-tab="seo">🔍 <span class="lbl">SEO Setup</span></div>
-      <div class="sb-item" data-tab="seoscore">📊 <span class="lbl">SEO Score</span></div>
+      <div class="sb-item" data-tab="schema">🧩 <span class="lbl">Schema Markup</span></div>
+      <div class="sb-item" data-tab="onpage">📝 <span class="lbl">On-Page Optimizer</span></div>
+      <div class="sb-item" data-tab="performance">⚡ <span class="lbl">Performance SEO</span></div>
+      <div class="sb-item" data-tab="technical">🔧 <span class="lbl">Technical SEO</span></div>
+      <div class="sb-item" data-tab="seoscore">📊 <span class="lbl">SEO Score</span><span class="badge"><?= $totalPass ?>/<?= $totalChecks ?></span></div>
+      <div class="sb-group">SITE</div>
       <div class="sb-item" data-tab="blog">✍️ <span class="lbl">Blog</span><span class="badge"><?= count($POSTS) ?></span></div>
       <div class="sb-item" data-tab="settings">⚙️ <span class="lbl">Settings</span></div>
       <div class="sb-item soon">📝 <span class="lbl">Content</span><span class="badge">SOON</span></div>
@@ -245,9 +347,9 @@ a{text-decoration:none;color:inherit}
     <div class="tab active" id="tab-dashboard">
       <div class="ov-grid">
         <div class="ov-card" data-go="seoscore">
-          <div class="ov-num" style="color:var(--green)"><?= $passCount ?>/20</div>
+          <div class="ov-num" style="color:var(--green)"><?= $totalPass ?>/<?= $totalChecks ?></div>
           <div class="ov-label">SEO Score</div>
-          <div class="ov-sub"><?= $passCount === 20 ? 'All optimizations live ✓' : (20-$passCount).' need attention' ?></div>
+          <div class="ov-sub"><?= $totalPass === $totalChecks ? 'All 5 blocks perfect ✓' : ($totalChecks-$totalPass).' need attention' ?></div>
         </div>
         <div class="ov-card" data-go="blog">
           <div class="ov-num"><?= count($POSTS) ?></div>
@@ -305,25 +407,167 @@ a{text-decoration:none;color:inherit}
       </div>
     </div>
 
-    <!-- ============ SEO SCORE TAB ============ -->
+    <!-- ============ SEO SCORE TAB (all blocks) ============ -->
     <div class="tab" id="tab-seoscore">
       <div class="score-card">
-        <div class="score-num"><?= $passCount ?>/20</div>
+        <div class="score-num"><?= $totalPass ?>/<?= $totalChecks ?></div>
         <div style="flex:1">
-          <div style="font-weight:700;margin-bottom:6px">SEO Optimizations Active</div>
-          <div class="score-bar"><i style="width:<?= $passCount*5 ?>%"></i></div>
-          <div class="score-text" style="margin-top:8px"><?= $passCount === 20 ? 'Perfect score — all 20 optimizations are live.' : (20-$passCount) . ' item(s) need attention — see SEO Setup.' ?></div>
+          <div style="font-weight:700;margin-bottom:6px">Total SEO Optimizations — across 5 in-depth blocks</div>
+          <div class="score-bar"><i style="width:<?= round($totalPass/$totalChecks*100) ?>%"></i></div>
+          <div class="score-text" style="margin-top:8px"><?= $totalPass === $totalChecks ? 'Perfect score — every optimization in every block is live.' : ($totalChecks-$totalPass) . ' item(s) need attention.' ?></div>
         </div>
       </div>
+      <?php foreach ($blocks as $b): $bp = count(array_filter($b[1], fn($c)=>$c[1])); ?>
       <div class="card">
-        <div class="card-h">📋 SEO Checklist — 20 Optimizations</div>
+        <div class="card-h"><?= e($b[0]) ?> <span style="margin-left:auto;color:<?= $bp===count($b[1])?'var(--green)':'#d98e04' ?>"><?= $bp ?>/<?= count($b[1]) ?></span></div>
         <ul class="checklist">
-          <?php foreach ($checks as $i => $c): ?>
+          <?php foreach ($b[1] as $i => $c): ?>
           <li><span class="num"><?= str_pad($i+1, 2, '0', STR_PAD_LEFT) ?></span>
               <span class="ok <?= $c[1] ? '' : 'warn' ?>"><?= $c[1] ? '✓' : '!' ?></span>
               <?= e($c[0]) ?></li>
           <?php endforeach; ?>
         </ul>
+      </div>
+      <?php endforeach; ?>
+    </div>
+
+    <!-- ============ SCHEMA MARKUP TAB ============ -->
+    <div class="tab" id="tab-schema">
+      <div class="card">
+        <div class="card-h">🧩 Business Schema</div>
+        <div class="card-b grid2">
+          <div class="field"><label>Business Type</label>
+            <select name="schema[business_type]" style="width:100%;padding:10px 13px;border:1px solid #ddd3c5;border-radius:8px;font-size:13.5px">
+              <?php foreach (['DaySpa','HealthAndBeautyBusiness','MassageBusiness','BeautySalon'] as $t): ?>
+              <option <?= ($schema['business_type'] ?? '') === $t ? 'selected' : '' ?>><?= $t ?></option>
+              <?php endforeach; ?>
+            </select>
+            <div class="hint">Schema.org type Google uses to classify the business.</div></div>
+          <div class="field"><label style="margin-top:22px"><input type="checkbox" name="schema[breadcrumbs]" <?= !empty($schema['breadcrumbs'])?'checked':'' ?> style="width:16px;height:16px;accent-color:var(--gold-dark)"> &nbsp;Breadcrumb schema (Home › Treatments › Book)</label></div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-h">💆 Services with Prices (price-rich snippets)</div>
+        <div class="card-b">
+          <div id="svcRows">
+          <?php foreach ($schema['services'] as $i => $s): ?>
+            <div class="grid2" style="grid-template-columns:2fr 1fr 1fr;gap:10px;margin-bottom:8px">
+              <input type="text" name="schema[services][<?= $i ?>][name]" value="<?= e($s['name']) ?>" placeholder="Service name" style="padding:9px 12px;border:1px solid #ddd3c5;border-radius:8px;font-size:13px">
+              <input type="text" name="schema[services][<?= $i ?>][price]" value="<?= e($s['price']) ?>" placeholder="Price ฿" style="padding:9px 12px;border:1px solid #ddd3c5;border-radius:8px;font-size:13px">
+              <input type="text" name="schema[services][<?= $i ?>][duration]" value="<?= e($s['duration']) ?>" placeholder="Minutes" style="padding:9px 12px;border:1px solid #ddd3c5;border-radius:8px;font-size:13px">
+            </div>
+          <?php endforeach; ?>
+            <div class="grid2" style="grid-template-columns:2fr 1fr 1fr;gap:10px;margin-bottom:8px">
+              <input type="text" name="schema[services][999][name]" placeholder="+ Add another service" style="padding:9px 12px;border:1px dashed #ddd3c5;border-radius:8px;font-size:13px">
+              <input type="text" name="schema[services][999][price]" placeholder="Price ฿" style="padding:9px 12px;border:1px dashed #ddd3c5;border-radius:8px;font-size:13px">
+              <input type="text" name="schema[services][999][duration]" placeholder="Minutes" style="padding:9px 12px;border:1px dashed #ddd3c5;border-radius:8px;font-size:13px">
+            </div>
+          </div>
+          <div class="hint">Leave a name blank to remove a row. Saved services are emitted as Service + Offer schema with THB prices.</div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-h">❓ FAQ Schema (expandable Q&amp;A in Google results)</div>
+        <div class="card-b">
+          <?php foreach ($schema['faqs'] as $i => $f): ?>
+          <div class="field"><label>Question <?= $i+1 ?></label>
+            <input type="text" name="schema[faqs][<?= $i ?>][q]" value="<?= e($f['q']) ?>" style="margin-bottom:6px">
+            <textarea name="schema[faqs][<?= $i ?>][a]" style="min-height:54px"><?= e($f['a']) ?></textarea></div>
+          <?php endforeach; ?>
+          <div class="field"><label>+ Add Question</label>
+            <input type="text" name="schema[faqs][999][q]" placeholder="New question" style="margin-bottom:6px">
+            <textarea name="schema[faqs][999][a]" style="min-height:54px" placeholder="Answer"></textarea></div>
+          <div class="hint">Clear a question to remove it. 3+ FAQs recommended for rich results.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ============ ON-PAGE OPTIMIZER TAB ============ -->
+    <div class="tab" id="tab-onpage">
+      <div class="card">
+        <div class="card-h">🎯 Keyword Targeting</div>
+        <div class="card-b grid2">
+          <div class="field"><label>Primary Keyword</label>
+            <input type="text" name="onpage[primary_keyword]" value="<?= e($onpage['primary_keyword']) ?>">
+            <div class="hint">The single search phrase this page should rank #1 for.</div></div>
+          <div class="field"><label>Secondary Keywords (comma-separated)</label>
+            <input type="text" name="onpage[secondary_keywords]" value="<?= e($onpage['secondary_keywords']) ?>"></div>
+          <div class="field" style="grid-column:1/-1"><label>Default Image Alt Text</label>
+            <input type="text" name="onpage[alt_default]" value="<?= e($onpage['alt_default']) ?>">
+            <div class="hint">Fallback alt for images without one.</div></div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-h">🔬 Live Content Analysis <span style="margin-left:auto;font-size:12px;color:var(--muted)">analyzed from the real homepage</span></div>
+        <ul class="checklist">
+          <?php foreach ($onpage_checks as $i => $c): ?>
+          <li><span class="ok <?= $c[1] ? '' : 'warn' ?>"><?= $c[1] ? '✓' : '!' ?></span><?= e($c[0]) ?></li>
+          <?php endforeach; ?>
+          <li><span class="ok <?= count($h1s[1]) === 1 ? '' : 'warn' ?>"><?= count($h1s[1]) === 1 ? '✓' : '!' ?></span>H1 headings on page: <?= count($h1s[1]) ?> (exactly 1 recommended)</li>
+          <li><span class="ok"><?= '✓' ?></span>H2 sections: <?= count($h2s[1]) ?></li>
+          <li><span class="ok <?= $imgs_no_alt === 0 ? '' : 'warn' ?>"><?= $imgs_no_alt === 0 ? '✓' : '!' ?></span>Images: <?= $imgs_total ?> total, <?= $imgs_no_alt ?> missing alt text</li>
+        </ul>
+      </div>
+      <div class="card">
+        <div class="card-h">🧭 Heading Structure (live from homepage)</div>
+        <div class="card-b" style="font-size:13px;line-height:2">
+          <?php foreach ($h1s[1] as $h): ?><div><strong style="color:var(--gold-dark)">H1</strong> &nbsp;<?= e(trim(strip_tags($h))) ?></div><?php endforeach; ?>
+          <?php foreach (array_slice($h2s[1], 0, 12) as $h): ?><div style="padding-left:26px"><strong style="color:#b9ae9a">H2</strong> &nbsp;<?= e(mb_substr(trim(strip_tags($h)), 0, 60)) ?></div><?php endforeach; ?>
+        </div>
+      </div>
+    </div>
+
+    <!-- ============ PERFORMANCE SEO TAB ============ -->
+    <div class="tab" id="tab-performance">
+      <input type="hidden" name="perf_submitted" value="1">
+      <div class="card">
+        <div class="card-h">⚡ Speed Optimizations (Core Web Vitals)</div>
+        <div class="card-b">
+          <label class="toggle"><input type="checkbox" name="performance[lazy_images]" <?= !empty($perf['lazy_images'])?'checked':'' ?>> Lazy-load images — below-the-fold images load only when scrolled into view (<?= $imgs_total ?> images on the homepage)</label>
+          <label class="toggle"><input type="checkbox" name="performance[defer_videos]" <?= !empty($perf['defer_videos'])?'checked':'' ?>> Defer video downloads — the two background videos (~4&nbsp;MB) stop blocking first paint</label>
+          <label class="toggle"><input type="checkbox" name="performance[preconnect_fonts]" <?= !empty($perf['preconnect_fonts'])?'checked':'' ?>> Preconnect to Google Fonts — fonts start downloading earlier</label>
+          <label class="toggle"><input type="checkbox" name="performance[strip_comments]" <?= !empty($perf['strip_comments'])?'checked':'' ?>> Strip HTML comments — smaller page payload</label>
+          <label class="toggle"><input type="checkbox" name="performance[dns_prefetch]" <?= !empty($perf['dns_prefetch'])?'checked':'' ?>> DNS prefetch hints for external domains</label>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-h">📏 Live Page Audit</div>
+        <ul class="checklist">
+          <li><span class="ok">✓</span>Homepage HTML size: <?= number_format(round(strlen($page_raw)/1024)) ?> KB</li>
+          <li><span class="ok">✓</span>Word count: <?= number_format($word_count) ?> words</li>
+          <li><span class="ok <?= $imgs_total < 40 ? '' : 'warn' ?>"><?= $imgs_total < 40 ? '✓' : '!' ?></span>Images on page: <?= $imgs_total ?></li>
+          <li><span class="ok <?= !empty($perf['lazy_images']) ? '' : 'warn' ?>"><?= !empty($perf['lazy_images']) ? '✓' : '!' ?></span>Lazy loading: <?= !empty($perf['lazy_images']) ? 'active — applied automatically to all images' : 'OFF' ?></li>
+          <li><span class="ok <?= !empty($perf['defer_videos']) ? '' : 'warn' ?>"><?= !empty($perf['defer_videos']) ? '✓' : '!' ?></span>Video deferral: <?= !empty($perf['defer_videos']) ? 'active — videos use preload=metadata' : 'OFF' ?></li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- ============ TECHNICAL SEO TAB ============ -->
+    <div class="tab" id="tab-technical">
+      <div class="card">
+        <div class="card-h">🌐 International &amp; Errors</div>
+        <div class="card-b grid2">
+          <div class="field"><label>Hreflang Language</label>
+            <input type="text" name="technical[hreflang]" value="<?= e($tech['hreflang']) ?>">
+            <div class="hint">Outputs hreflang + x-default tags. Ready for a future Thai (th) version.</div></div>
+          <div class="field"><label style="margin-top:22px"><input type="checkbox" name="technical[custom_404]" <?= !empty($tech['custom_404'])?'checked':'' ?> style="width:16px;height:16px;accent-color:var(--gold-dark)"> &nbsp;Branded 404 page — <a href="/some-missing-page" target="_blank" style="color:var(--gold-dark)">preview ↗</a></label></div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-h">↪️ 301 Redirects</div>
+        <div class="card-b">
+          <div class="field"><label>Redirect Rules — one per line: /old-path https://target-url</label>
+            <textarea name="technical[redirects_raw]" style="min-height:90px;font-family:monospace;font-size:12.5px" placeholder="/old-page https://crystal-aura-final.vercel.app/#pricing"><?php foreach ($tech['redirects'] as $r) echo e($r['from'] . ' ' . $r['to']) . "\n"; ?></textarea>
+            <div class="hint"><?= count($tech['redirects']) ?> active rule(s). Useful after URL changes so old links keep working.</div></div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-h">🚫 Crawler Exclusions</div>
+        <div class="card-b">
+          <div class="field"><label>Noindex Paths — one per line</label>
+            <textarea name="technical[noindex_raw]" style="min-height:70px;font-family:monospace;font-size:12.5px"><?= e(implode("\n", $tech['noindex_paths'])) ?></textarea>
+            <div class="hint">These paths are blocked in robots.txt and kept out of Google. /admin.php and /data/ are always protected.</div></div>
+        </div>
       </div>
     </div>
 

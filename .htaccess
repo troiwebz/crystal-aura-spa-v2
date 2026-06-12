@@ -4,4 +4,5 @@ RewriteRule ^robots\.txt$ robots.php [L]
 RewriteRule ^data/ - [F,L]
 RewriteRule ^blog/?$ blog.php [L]
 RewriteRule ^blog/([a-z0-9-]+)/?$ blog.php?slug=$1 [L,QSA]
+ErrorDocument 404 /404.php
 DirectoryIndex index.php
