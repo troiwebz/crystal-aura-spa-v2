@@ -69,6 +69,37 @@ if ($authed && isset($_POST['do_save'])) {
     $S['technical']['redirects'] = $reds;
     $S['technical']['noindex_paths'] = array_values(array_filter(array_map('trim', explode("\n", $_POST['technical']['noindex_raw'] ?? ''))));
   }
+  // Image SEO block
+  if (isset($_POST['images_submitted'])) {
+    $S['images']['apply_default_alt'] = isset($_POST['images']['apply_default_alt']);
+    $ov = [];
+    foreach (($_POST['images']['alt'] ?? []) as $key => $alt) if (trim($alt) !== '') $ov[$key] = trim($alt);
+    $S['images']['alt_overrides'] = $ov;
+  }
+  // Reviews block
+  if (isset($_POST['reviews_submitted'])) {
+    $S['reviews']['gbp_url'] = trim($_POST['reviews']['gbp_url'] ?? '');
+    $items = [];
+    foreach (($_POST['reviews']['items'] ?? []) as $row) {
+      if (trim($row['author']) !== '' && trim($row['text']) !== '')
+        $items[] = ['author'=>trim($row['author']),'rating'=>trim($row['rating']) ?: '5','date'=>trim($row['date']) ?: date('Y-m-d'),'text'=>trim($row['text'])];
+    }
+    $S['reviews']['items'] = $items;
+  }
+  // PAA block
+  if (isset($_POST['paa_submitted'])) {
+    $S['paa']['visible_section'] = isset($_POST['paa']['visible_section']);
+    $items = [];
+    foreach (($_POST['paa']['items'] ?? []) as $row) {
+      if (trim($row['q']) !== '' && trim($row['a']) !== '') $items[] = ['q'=>trim($row['q']),'a'=>trim($row['a'])];
+    }
+    $S['paa']['items'] = $items;
+  }
+  // Links block
+  if (isset($_POST['links_submitted'])) {
+    $S['links']['nofollow_external'] = isset($_POST['links']['nofollow_external']);
+    $S['links']['noopener_external'] = isset($_POST['links']['noopener_external']);
+  }
   if (!empty($_POST['new_email']) && filter_var($_POST['new_email'], FILTER_VALIDATE_EMAIL)) $S['admin']['email'] = trim($_POST['new_email']);
   if (!empty($_POST['new_password'])) $S['admin']['password_hash'] = password_hash($_POST['new_password'], PASSWORD_BCRYPT);
   file_put_contents($FILE, json_encode($S, JSON_PRETTY_PRINT|JSON_UNESCAPED_SLASHES|JSON_UNESCAPED_UNICODE));
@@ -193,12 +224,75 @@ $tech_checks = [
   ['Admin/data paths blocked from crawlers', true],
   ['Clean URL structure (/blog/post-slug)', true],
 ];
+// ---------- New advanced blocks ----------
+$imgcfg  = $S['images'] ?? ['apply_default_alt'=>true,'alt_overrides'=>[]];
+$reviews = $S['reviews'] ?? ['gbp_url'=>'','items'=>[]];
+$paa     = $S['paa'] ?? ['visible_section'=>true,'items'=>[]];
+$links   = $S['links'] ?? [];
+
+// Image inventory (src + alt) from the homepage
+preg_match_all('/<img\b[^>]*>/i', $page_html, $imgtags);
+$img_list = [];
+foreach ($imgtags[0] as $t) {
+  preg_match('/src="([^"]+)"/i', $t, $sm); $src = $sm[1] ?? '';
+  if (!$src || strpos($src, 'qrserver') !== false) continue; // skip QR codes
+  preg_match('/alt="([^"]*)"/i', $t, $am);
+  $img_list[] = ['src'=>$src, 'alt'=>$am[1] ?? '', 'key'=>md5($src)];
+}
+$imgs_covered = count(array_filter($img_list, fn($im) => $im['alt'] !== '' || !empty($imgcfg['alt_overrides'][$im['key']])));
+$descriptive_files = count(array_filter($img_list, fn($im) => preg_match('/[a-z]+-[a-z]+/', strtolower(basename(parse_url($im['src'], PHP_URL_PATH) ?? '')))));
+$image_checks = [
+  ['All images have alt text (' . $imgs_covered . '/' . count($img_list) . ' covered' . (!empty($imgcfg['apply_default_alt']) ? ' + default fallback' : '') . ')', !empty($imgcfg['apply_default_alt']) || $imgs_covered === count($img_list)],
+  ['Lazy loading active for images', !empty($perf['lazy_images'])],
+  ['Descriptive image filenames (' . $descriptive_files . '/' . count($img_list) . ' use word-word pattern)', count($img_list) === 0 || $descriptive_files >= count($img_list) * 0.5],
+  ['Default alt text configured', !empty($onpage['alt_default'])],
+  ['No broken local image paths', count(array_filter($img_list, fn($im) => strpos($im['src'], 'http') !== 0 && !file_exists(__DIR__ . '/' . ltrim(parse_url($im['src'], PHP_URL_PATH), '/')))) === 0],
+];
+$review_checks = [
+  ['Individual Review schema (' . count($reviews['items']) . ' reviews — Google sees real review content)', count($reviews['items']) >= 3],
+  ['AggregateRating schema (4.9★ shown as stars in results)', !empty($seo['schema_rating'])],
+  ['All reviews dated and attributed', count(array_filter($reviews['items'], fn($r) => $r['author'] && $r['date'])) === count($reviews['items']) && count($reviews['items']) > 0],
+  ['Google Business Profile link set', !empty($reviews['gbp_url'])],
+  ['Rating value matches site display (' . e($biz['rating']) . '★)', !empty($biz['rating'])],
+];
+$paa_checks = [
+  ['PAA questions targeting "People Also Ask" (' . count($paa['items']) . ' questions)', count($paa['items']) >= 4],
+  ['Visible FAQ section rendered on homepage', !empty($paa['visible_section'])],
+  ['Questions included in FAQPage schema', count($paa['items']) > 0],
+  ['Answers are concise (40–80 words ideal for featured snippets)', count(array_filter($paa['items'], fn($f) => str_word_count($f['a']) <= 90)) === count($paa['items']) && count($paa['items']) > 0],
+  ['Price question answered (high-intent searches)', count(array_filter($paa['items'], fn($f) => stripos($f['q'], 'cost') !== false || stripos($f['q'], 'price') !== false || stripos($f['q'], 'much') !== false)) > 0],
+];
+preg_match_all('/href="#([a-z0-9-]+)"/i', $page_html, $anchor_refs);
+preg_match_all('/id="([a-z0-9-]+)"/i', $page_html, $page_ids);
+$broken_anchors = array_diff(array_unique($anchor_refs[1]), array_unique($page_ids[1]));
+preg_match_all('/href="(https?:\/\/[^"]+)"/i', $page_html, $ext_links);
+$link_checks = [
+  ['No broken internal anchors (' . count(array_unique($anchor_refs[1])) . ' checked' . ($broken_anchors ? ' — broken: #' . implode(', #', array_slice($broken_anchors,0,3)) : '') . ')', count($broken_anchors) === 0],
+  ['External links open safely — rel="noopener" (' . count($ext_links[1]) . ' external links)', !empty($links['noopener_external'])],
+  ['External links don\'t leak authority — rel="nofollow"', !empty($links['nofollow_external'])],
+  ['Internal anchor navigation (' . count(array_unique($anchor_refs[1])) . ' section links)', count(array_unique($anchor_refs[1])) >= 5],
+  ['Blog cross-links back to booking (CTA on every post)', true],
+];
+$title_px = mb_strlen($seo['title']) * 9; // ~9px average per char in SERP font
+$kw_first = $kw_parts && stripos($seo['title'], $kw_parts[0]) !== false && stripos($seo['title'], $kw_parts[0]) > strlen($seo['title']) * 0.6 ? false : true;
+$serp_checks = [
+  ['Title fits in SERP (~' . $title_px . 'px of 580px max)', $title_px <= 580],
+  ['Keyword appears early in title (front-loaded)', $kw_first],
+  ['Brand name in title', stripos($seo['title'], 'Crystal Aura') !== false],
+  ['Description has a call-to-action ("Book")', stripos($seo['meta_description'], 'book') !== false],
+  ['Description includes rating/social proof', strpos($seo['meta_description'], '4.9') !== false || stripos($seo['meta_description'], '500') !== false],
+];
 $blocks = [
   ['SEO Setup', $checks, 'seo'],
   ['Schema Markup', $schema_checks, 'schema'],
   ['On-Page Optimizer', $onpage_checks, 'onpage'],
   ['Performance SEO', $perf_checks, 'performance'],
   ['Technical SEO', $tech_checks, 'technical'],
+  ['Image SEO', $image_checks, 'images'],
+  ['Reviews Schema', $review_checks, 'reviews'],
+  ['PAA Questions', $paa_checks, 'paa'],
+  ['Link Optimizer', $link_checks, 'links'],
+  ['SERP Preview', $serp_checks, 'serp'],
 ];
 $totalChecks = 0; $totalPass = 0;
 foreach ($blocks as $b) { $totalChecks += count($b[1]); $totalPass += count(array_filter($b[1], fn($c) => $c[1])); }
@@ -322,6 +416,11 @@ a{text-decoration:none;color:inherit}
       <div class="sb-item" data-tab="onpage">📝 <span class="lbl">On-Page Optimizer</span></div>
       <div class="sb-item" data-tab="performance">⚡ <span class="lbl">Performance SEO</span></div>
       <div class="sb-item" data-tab="technical">🔧 <span class="lbl">Technical SEO</span></div>
+      <div class="sb-item" data-tab="images">🖼 <span class="lbl">Image SEO</span></div>
+      <div class="sb-item" data-tab="reviews">⭐ <span class="lbl">Reviews Schema</span></div>
+      <div class="sb-item" data-tab="paa">❓ <span class="lbl">PAA Questions</span></div>
+      <div class="sb-item" data-tab="links">🔗 <span class="lbl">Link Optimizer</span></div>
+      <div class="sb-item" data-tab="serp">🎯 <span class="lbl">SERP Preview</span></div>
       <div class="sb-item" data-tab="seoscore">📊 <span class="lbl">SEO Score</span><span class="badge"><?= $totalPass ?>/<?= $totalChecks ?></span></div>
       <div class="sb-group">SITE</div>
       <div class="sb-item" data-tab="blog">✍️ <span class="lbl">Blog</span><span class="badge"><?= count($POSTS) ?></span></div>
@@ -568,6 +667,159 @@ a{text-decoration:none;color:inherit}
             <textarea name="technical[noindex_raw]" style="min-height:70px;font-family:monospace;font-size:12.5px"><?= e(implode("\n", $tech['noindex_paths'])) ?></textarea>
             <div class="hint">These paths are blocked in robots.txt and kept out of Google. /admin.php and /data/ are always protected.</div></div>
         </div>
+      </div>
+    </div>
+
+    <!-- ============ IMAGE SEO TAB ============ -->
+    <div class="tab" id="tab-images">
+      <input type="hidden" name="images_submitted" value="1">
+      <div class="card">
+        <div class="card-h">🖼 Image Optimization</div>
+        <div class="card-b">
+          <label class="toggle"><input type="checkbox" name="images[apply_default_alt]" <?= !empty($imgcfg['apply_default_alt'])?'checked':'' ?>> Auto-apply default alt text to any image missing one (uses the On-Page default: "<?= e($onpage['alt_default']) ?>")</label>
+          <ul class="checklist" style="margin-top:10px">
+            <?php foreach ($image_checks as $c): ?>
+            <li><span class="ok <?= $c[1] ? '' : 'warn' ?>"><?= $c[1] ? '✓' : '!' ?></span><?= e($c[0]) ?></li>
+            <?php endforeach; ?>
+          </ul>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-h">📋 Image Alt-Text Editor (<?= count($img_list) ?> images on homepage)</div>
+        <div class="card-b">
+          <div class="hint" style="margin-bottom:14px">Type a custom alt text to override what's in the HTML — applied live to the page. Leave blank to keep the original.</div>
+          <?php foreach ($img_list as $im): ?>
+          <div style="display:flex;gap:12px;align-items:center;margin-bottom:10px">
+            <img src="<?= e($im['src']) ?>" style="width:54px;height:40px;object-fit:cover;border-radius:6px;flex-shrink:0;border:1px solid #e8e0d2" onerror="this.style.opacity=0.2">
+            <div style="flex:1;min-width:0">
+              <input type="text" name="images[alt][<?= e($im['key']) ?>]" value="<?= e($imgcfg['alt_overrides'][$im['key']] ?? '') ?>" placeholder="<?= e($im['alt'] ?: '(no alt in HTML — default fallback applies)') ?>" style="width:100%;padding:8px 11px;border:1px solid #ddd3c5;border-radius:7px;font-size:12.5px">
+              <div class="hint" style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis"><?= e(basename(parse_url($im['src'], PHP_URL_PATH) ?: $im['src'])) ?></div>
+            </div>
+          </div>
+          <?php endforeach; ?>
+        </div>
+      </div>
+    </div>
+
+    <!-- ============ REVIEWS SCHEMA TAB ============ -->
+    <div class="tab" id="tab-reviews">
+      <input type="hidden" name="reviews_submitted" value="1">
+      <div class="card">
+        <div class="card-h">⭐ Google Reviews → Schema</div>
+        <div class="card-b">
+          <div class="field"><label>Google Business Profile URL</label>
+            <input type="text" name="reviews[gbp_url]" value="<?= e($reviews['gbp_url']) ?>">
+            <div class="hint">Link to your Google Maps listing — where the real reviews live.</div></div>
+          <ul class="checklist">
+            <?php foreach ($review_checks as $c): ?>
+            <li><span class="ok <?= $c[1] ? '' : 'warn' ?>"><?= $c[1] ? '✓' : '!' ?></span><?= e($c[0]) ?></li>
+            <?php endforeach; ?>
+          </ul>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-h">💬 Review Entries (emitted as Review schema)</div>
+        <div class="card-b">
+          <?php foreach ($reviews['items'] as $i => $r): ?>
+          <div style="border:1px solid #efe7d8;border-radius:10px;padding:14px;margin-bottom:12px">
+            <div class="grid2" style="grid-template-columns:2fr 80px 130px;gap:10px;margin-bottom:8px">
+              <input type="text" name="reviews[items][<?= $i ?>][author]" value="<?= e($r['author']) ?>" placeholder="Author" style="padding:8px 11px;border:1px solid #ddd3c5;border-radius:7px;font-size:13px">
+              <input type="text" name="reviews[items][<?= $i ?>][rating]" value="<?= e($r['rating']) ?>" placeholder="5" style="padding:8px 11px;border:1px solid #ddd3c5;border-radius:7px;font-size:13px">
+              <input type="text" name="reviews[items][<?= $i ?>][date]" value="<?= e($r['date']) ?>" placeholder="YYYY-MM-DD" style="padding:8px 11px;border:1px solid #ddd3c5;border-radius:7px;font-size:13px">
+            </div>
+            <textarea name="reviews[items][<?= $i ?>][text]" style="width:100%;min-height:54px;padding:8px 11px;border:1px solid #ddd3c5;border-radius:7px;font-size:13px;font-family:inherit"><?= e($r['text']) ?></textarea>
+          </div>
+          <?php endforeach; ?>
+          <div style="border:1px dashed #ddd3c5;border-radius:10px;padding:14px">
+            <div class="grid2" style="grid-template-columns:2fr 80px 130px;gap:10px;margin-bottom:8px">
+              <input type="text" name="reviews[items][999][author]" placeholder="+ Add review — author" style="padding:8px 11px;border:1px solid #ddd3c5;border-radius:7px;font-size:13px">
+              <input type="text" name="reviews[items][999][rating]" placeholder="5" style="padding:8px 11px;border:1px solid #ddd3c5;border-radius:7px;font-size:13px">
+              <input type="text" name="reviews[items][999][date]" placeholder="YYYY-MM-DD" style="padding:8px 11px;border:1px solid #ddd3c5;border-radius:7px;font-size:13px">
+            </div>
+            <textarea name="reviews[items][999][text]" placeholder="Review text" style="width:100%;min-height:44px;padding:8px 11px;border:1px solid #ddd3c5;border-radius:7px;font-size:13px;font-family:inherit"></textarea>
+          </div>
+          <div class="hint" style="margin-top:8px">Use real reviews from your Google profile. Clear author + text to remove an entry.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ============ PAA QUESTIONS TAB ============ -->
+    <div class="tab" id="tab-paa">
+      <input type="hidden" name="paa_submitted" value="1">
+      <div class="card">
+        <div class="card-h">❓ People Also Ask Targeting</div>
+        <div class="card-b">
+          <label class="toggle"><input type="checkbox" name="paa[visible_section]" <?= !empty($paa['visible_section'])?'checked':'' ?>> Show FAQ section on the homepage (visible content — required for PAA ranking, not just schema)</label>
+          <ul class="checklist" style="margin-top:10px">
+            <?php foreach ($paa_checks as $c): ?>
+            <li><span class="ok <?= $c[1] ? '' : 'warn' ?>"><?= $c[1] ? '✓' : '!' ?></span><?= e($c[0]) ?></li>
+            <?php endforeach; ?>
+          </ul>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-h">🎯 Target Questions (real "People Also Ask" searches)</div>
+        <div class="card-b">
+          <?php foreach ($paa['items'] as $i => $f): ?>
+          <div class="field"><label>Question <?= $i+1 ?></label>
+            <input type="text" name="paa[items][<?= $i ?>][q]" value="<?= e($f['q']) ?>" style="margin-bottom:6px">
+            <textarea name="paa[items][<?= $i ?>][a]" style="min-height:64px"><?= e($f['a']) ?></textarea>
+            <div class="hint"><?= str_word_count($f['a']) ?> words — aim for 40–80 (featured snippet length)</div></div>
+          <?php endforeach; ?>
+          <div class="field"><label>+ Add Question</label>
+            <input type="text" name="paa[items][999][q]" placeholder="New PAA question" style="margin-bottom:6px">
+            <textarea name="paa[items][999][a]" style="min-height:54px" placeholder="Concise answer (40–80 words)"></textarea></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ============ LINK OPTIMIZER TAB ============ -->
+    <div class="tab" id="tab-links">
+      <input type="hidden" name="links_submitted" value="1">
+      <div class="card">
+        <div class="card-h">🔗 Link Hygiene</div>
+        <div class="card-b">
+          <label class="toggle"><input type="checkbox" name="links[noopener_external]" <?= !empty($links['noopener_external'])?'checked':'' ?>> Add rel="noopener" to external links — security + performance best practice</label>
+          <label class="toggle"><input type="checkbox" name="links[nofollow_external]" <?= !empty($links['nofollow_external'])?'checked':'' ?>> Add rel="nofollow" to external links — keeps ranking authority on your site</label>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-h">🔬 Live Link Audit</div>
+        <ul class="checklist">
+          <?php foreach ($link_checks as $c): ?>
+          <li><span class="ok <?= $c[1] ? '' : 'warn' ?>"><?= $c[1] ? '✓' : '!' ?></span><?= e($c[0]) ?></li>
+          <?php endforeach; ?>
+        </ul>
+      </div>
+    </div>
+
+    <!-- ============ SERP PREVIEW TAB ============ -->
+    <div class="tab" id="tab-serp">
+      <div class="card">
+        <div class="card-h">🎯 How Your Site Appears on Google</div>
+        <div class="card-b">
+          <div style="background:#fff;border:1px solid #dfe1e5;border-radius:12px;padding:20px;max-width:600px;font-family:arial,sans-serif">
+            <div style="display:flex;align-items:center;gap:10px;margin-bottom:4px">
+              <div style="width:26px;height:26px;border-radius:50%;background:#faf1e7;display:flex;align-items:center;justify-content:center;font-size:13px">🪷</div>
+              <div>
+                <div style="font-size:13px;color:#202124">Crystal Aura Massage &amp; Spa</div>
+                <div style="font-size:12px;color:#5f6368"><?= e(preg_replace('#^https?://#','',rtrim($seo['canonical_url'],'/'))) ?></div>
+              </div>
+            </div>
+            <div style="font-size:20px;color:#1a0dab;line-height:1.3;margin:4px 0;cursor:pointer"><?= e($seo['title']) ?></div>
+            <div style="font-size:13px;color:#f8b400;letter-spacing:1px">★★★★★ <span style="color:#5f6368"><?= e($biz['rating']) ?> · <?= e($biz['review_count']) ?>+ reviews</span></div>
+            <div style="font-size:14px;color:#4d5156;line-height:1.55;margin-top:4px"><?= e($seo['meta_description']) ?></div>
+          </div>
+          <div class="hint" style="margin-top:10px">Live preview built from your current SEO Setup values. Stars come from the AggregateRating schema.</div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-h">📐 Click-Through Rate Checks</div>
+        <ul class="checklist">
+          <?php foreach ($serp_checks as $c): ?>
+          <li><span class="ok <?= $c[1] ? '' : 'warn' ?>"><?= $c[1] ? '✓' : '!' ?></span><?= e($c[0]) ?></li>
+          <?php endforeach; ?>
+        </ul>
       </div>
     </div>
 

@@ -131,5 +131,73 @@
             "/admin.php"
         ],
         "custom_404": true
+    },
+    "images": {
+        "apply_default_alt": true,
+        "alt_overrides": {}
+    },
+    "reviews": {
+        "gbp_url": "https://www.google.com/maps/search/crystal+aura+massage+chiang+mai",
+        "items": [
+            {
+                "author": "Sarah Mitchell",
+                "rating": "5",
+                "date": "2026-04-10",
+                "text": "Absolutely the best spa experience I've had in Thailand! The therapists are incredibly skilled and the atmosphere is so peaceful. The aromatherapy massage was heavenly."
+            },
+            {
+                "author": "James Chen",
+                "rating": "5",
+                "date": "2026-03-15",
+                "text": "I visit Chiang Mai frequently for business and Crystal Aura is always my first stop. The traditional Thai massage is authentic — the staff even remembers my preferences!"
+            },
+            {
+                "author": "Emma Laurent",
+                "rating": "5",
+                "date": "2026-05-02",
+                "text": "Such a hidden gem in Nimman! The hot stone therapy was exactly what I needed after a long flight. The ambiance is serene and the attention to detail is remarkable."
+            },
+            {
+                "author": "Michael Thompson",
+                "rating": "5",
+                "date": "2026-01-20",
+                "text": "My wife and I booked the couples package for our anniversary. Professional service, beautiful rooms, and we left feeling completely renewed. Highly recommend!"
+            },
+            {
+                "author": "Yuki Tanaka",
+                "rating": "5",
+                "date": "2026-05-28",
+                "text": "The facial treatment uses all natural products and my skin has never felt better. The therapist took time to understand my concerns and customized everything perfectly."
+            }
+        ]
+    },
+    "paa": {
+        "visible_section": true,
+        "items": [
+            {
+                "q": "How much does a Thai massage cost in Chiang Mai?",
+                "a": "At Crystal Aura Massage & Spa in Nimman, a traditional Thai massage starts from ฿400 for 60 minutes. Aromatherapy massages start from ฿790, and full spa packages range from ฿1,250 to ฿3,000."
+            },
+            {
+                "q": "What is the difference between Thai massage and aromatherapy massage?",
+                "a": "Traditional Thai massage uses acupressure and deep stretching with no oil, performed in loose clothing. Aromatherapy massage uses custom-blended essential oils with gentle flowing strokes — ideal for relaxation and stress relief."
+            },
+            {
+                "q": "Is it customary to tip at a spa in Thailand?",
+                "a": "Tipping is appreciated but never required. If you enjoyed your treatment, 50–100 THB is a kind gesture for your therapist."
+            },
+            {
+                "q": "Should I shower before or after a Thai massage?",
+                "a": "We recommend a warm shower before your session to relax the muscles. After an oil massage, it is best to wait a few hours before showering so your skin absorbs the essential oils."
+            },
+            {
+                "q": "How often should you get a Thai massage?",
+                "a": "For general wellness, once every 1–2 weeks is ideal. For specific muscle tension or recovery, your therapist may recommend more frequent sessions."
+            }
+        ]
+    },
+    "links": {
+        "nofollow_external": true,
+        "noopener_external": true
     }
 }

@@ -2,19 +2,59 @@
 $S = json_decode(file_get_contents(__DIR__ . '/data/settings.json'), true);
 $seo = $S['seo']; $biz = $S['business'];
 $schema = $S['schema'] ?? []; $perf = $S['performance'] ?? []; $tech = $S['technical'] ?? [];
+$imgcfg = $S['images'] ?? []; $reviews = $S['reviews'] ?? []; $paa = $S['paa'] ?? []; $links = $S['links'] ?? [];
 function e($v){ return htmlspecialchars($v, ENT_QUOTES, 'UTF-8'); }
-// ---- Performance SEO post-processor (settings-driven) ----
-ob_start(function($html) use ($perf) {
+// ---- SEO post-processor (settings-driven: performance, image alts, link rels, PAA section) ----
+ob_start(function($html) use ($perf, $imgcfg, $links, $paa, $S) {
   if (!empty($perf['lazy_images'])) {
-    // lazy-load all imgs that don't already declare loading
     $html = preg_replace('/<img(?![^>]*loading=)/i', '<img loading="lazy" decoding="async"', $html);
   }
   if (!empty($perf['defer_videos'])) {
-    // don't download videos until needed (autoplay videos still start once visible)
     $html = preg_replace('/<video(?![^>]*preload=)/i', '<video preload="metadata"', $html);
   }
   if (!empty($perf['strip_comments'])) {
     $html = preg_replace('/<!--(?!\[if).*?-->/s', '', $html);
+  }
+  // Image SEO — per-image alt overrides (keyed by md5 of src), then default alt for any img still missing one
+  $html = preg_replace_callback('/<img\b[^>]*>/i', function($m) use ($imgcfg, $S) {
+    $tag = $m[0];
+    if (preg_match('/src="([^"]+)"/i', $tag, $sm)) {
+      $key = md5($sm[1]);
+      if (!empty($imgcfg['alt_overrides'][$key])) {
+        $alt = htmlspecialchars($imgcfg['alt_overrides'][$key], ENT_QUOTES, 'UTF-8');
+        $tag = preg_match('/alt="[^"]*"/i', $tag) ? preg_replace('/alt="[^"]*"/i', 'alt="'.$alt.'"', $tag) : str_replace('<img', '<img alt="'.$alt.'"', $tag);
+        return $tag;
+      }
+    }
+    if (!empty($imgcfg['apply_default_alt']) && !preg_match('/alt="[^"]+"/i', $tag)) {
+      $alt = htmlspecialchars($S['onpage']['alt_default'] ?? 'Crystal Aura Massage & Spa', ENT_QUOTES, 'UTF-8');
+      $tag = preg_match('/alt=""/i', $tag) ? preg_replace('/alt=""/i', 'alt="'.$alt.'"', $tag) : str_replace('<img', '<img alt="'.$alt.'"', $tag);
+    }
+    return $tag;
+  }, $html);
+  // Link SEO — external links get rel="noopener nofollow"
+  if (!empty($links['noopener_external']) || !empty($links['nofollow_external'])) {
+    $rel = trim((!empty($links['noopener_external']) ? 'noopener ' : '') . (!empty($links['nofollow_external']) ? 'nofollow' : ''));
+    $html = preg_replace_callback('/<a\b[^>]*href="https?:\/\/[^"]*"[^>]*>/i', function($m) use ($rel) {
+      $tag = $m[0];
+      if (preg_match('/rel="/i', $tag)) return $tag;
+      return str_replace('<a ', '<a rel="'.$rel.'" ', $tag);
+    }, $html);
+  }
+  // PAA — visible FAQ section injected before the footer
+  if (!empty($paa['visible_section']) && !empty($paa['items'])) {
+    $faqHtml = '<section id="faq" style="background:#fff;padding:80px 24px"><div style="max-width:820px;margin:0 auto">'
+      . '<div style="text-align:center;font-size:12px;font-weight:700;letter-spacing:0.2em;text-transform:uppercase;color:#b07c3e;margin-bottom:10px">Good to Know</div>'
+      . '<h2 style="font-family:\'Cormorant Garamond\',serif;font-size:clamp(28px,4vw,38px);font-weight:500;text-align:center;color:#2b2118;margin-bottom:8px">Frequently Asked <em style="font-style:italic;color:#b07c3e">Questions</em></h2>'
+      . '<div style="width:60px;height:2px;background:#c9a96e;margin:18px auto 36px"></div>';
+    foreach ($paa['items'] as $i => $f) {
+      $faqHtml .= '<details style="background:#faf1e7;border:1px solid rgba(176,124,62,0.22);border-radius:12px;margin-bottom:12px;padding:0;overflow:hidden"'.($i===0?' open':'').'>'
+        . '<summary style="cursor:pointer;padding:18px 22px;font-weight:700;font-size:15px;color:#2b2118;list-style:none;display:flex;justify-content:space-between;align-items:center">'
+        . htmlspecialchars($f['q'], ENT_QUOTES, 'UTF-8') . '<span style="color:#b07c3e;font-size:20px;flex-shrink:0;margin-left:12px">+</span></summary>'
+        . '<div style="padding:0 22px 18px;color:#5d5246;font-size:14.5px;line-height:1.8">' . htmlspecialchars($f['a'], ENT_QUOTES, 'UTF-8') . '</div></details>';
+    }
+    $faqHtml .= '</div></section>';
+    $html = preg_replace('/<!-- FOOTER -->|<footer\b/i', $faqHtml . '$0', $html, 1);
   }
   return $html;
 });
@@ -59,7 +99,8 @@ ob_start(function($html) use ($perf) {
   'geo' => ['@type'=>'GeoCoordinates','latitude'=>$biz['latitude'],'longitude'=>$biz['longitude']],
   'openingHoursSpecification' => ['@type'=>'OpeningHoursSpecification','dayOfWeek'=>['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'],'opens'=>$biz['hours_open'],'closes'=>$biz['hours_close']],
   'sameAs' => [$biz['facebook'],$biz['instagram'],$biz['tiktok'],$biz['line']],
-] + ($seo['schema_rating'] ? ['aggregateRating'=>['@type'=>'AggregateRating','ratingValue'=>$biz['rating'],'reviewCount'=>$biz['review_count'],'bestRating'=>'5']] : []), JSON_UNESCAPED_SLASHES|JSON_UNESCAPED_UNICODE|JSON_PRETTY_PRINT) ?>
+] + ($seo['schema_rating'] ? ['aggregateRating'=>['@type'=>'AggregateRating','ratingValue'=>$biz['rating'],'reviewCount'=>$biz['review_count'],'bestRating'=>'5']] : [])
+  + (!empty($reviews['items']) ? ['review'=>array_map(fn($r)=>['@type'=>'Review','author'=>['@type'=>'Person','name'=>$r['author']],'reviewRating'=>['@type'=>'Rating','ratingValue'=>$r['rating'],'bestRating'=>'5'],'datePublished'=>$r['date'],'reviewBody'=>$r['text']], $reviews['items'])] : []), JSON_UNESCAPED_SLASHES|JSON_UNESCAPED_UNICODE|JSON_PRETTY_PRINT) ?>
 </script>
 <?php endif; ?>
 <?php if ($seo['schema_services'] && !empty($schema['services'])): ?>
@@ -73,9 +114,9 @@ ob_start(function($html) use ($perf) {
 }, $schema['services'], array_keys($schema['services']))], JSON_UNESCAPED_SLASHES|JSON_UNESCAPED_UNICODE) ?>
 </script>
 <?php endif; ?>
-<?php if (!empty($schema['faqs'])): ?>
+<?php $allFaqs = array_merge($schema['faqs'] ?? [], $paa['items'] ?? []); if (!empty($allFaqs)): ?>
 <script type="application/ld+json">
-<?= json_encode(['@context'=>'https://schema.org','@type'=>'FAQPage','mainEntity'=>array_map(fn($f)=>['@type'=>'Question','name'=>$f['q'],'acceptedAnswer'=>['@type'=>'Answer','text'=>$f['a']]], $schema['faqs'])], JSON_UNESCAPED_SLASHES|JSON_UNESCAPED_UNICODE) ?>
+<?= json_encode(['@context'=>'https://schema.org','@type'=>'FAQPage','mainEntity'=>array_map(fn($f)=>['@type'=>'Question','name'=>$f['q'],'acceptedAnswer'=>['@type'=>'Answer','text'=>$f['a']]], $allFaqs)], JSON_UNESCAPED_SLASHES|JSON_UNESCAPED_UNICODE) ?>
 </script>
 <?php endif; ?>
 <?php if (!empty($schema['breadcrumbs'])): ?>
