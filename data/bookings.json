@@ -1,0 +1,17 @@
+[
+    {
+        "id": "b6a2bf1aaf05cc",
+        "ts": "2026-06-12 11:46",
+        "name": "Test Guest",
+        "phone": "0812345678",
+        "email": "",
+        "service": "Aromatherapy Massage",
+        "duration": "90 min",
+        "date": "2026-06-15",
+        "time": "14:00",
+        "people": "2 People",
+        "notes": "Window seat please",
+        "channel": "whatsapp",
+        "status": "new"
+    }
+]

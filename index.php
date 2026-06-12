@@ -3223,9 +3223,23 @@ function buildBookingMsg(d) {
   );
 }
 
+// Capture every enquiry to the admin dashboard before handing off to WhatsApp/LINE/email.
+// keepalive lets the request finish even while the browser opens the next window.
+function captureEnquiry(d, channel) {
+  try {
+    fetch('capture.php', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify(Object.assign({}, d, {channel: channel})),
+      keepalive: true
+    }).catch(function(){});
+  } catch(e) {}
+}
+
 // Book via WhatsApp
 document.getElementById('btnWA').addEventListener('click', () => {
   const d = getFormData();
+  captureEnquiry(d, 'whatsapp');
   const msg = buildBookingMsg(d);
   window.open('https://wa.me/66959932861?text=' + encodeURIComponent(msg), '_blank');
 });
@@ -3233,6 +3247,7 @@ document.getElementById('btnWA').addEventListener('click', () => {
 // Book via LINE
 document.getElementById('btnLine').addEventListener('click', () => {
   const d = getFormData();
+  captureEnquiry(d, 'line');
   const msg = buildBookingMsg(d);
   // LINE supports text pre-fill via oaMessage URL
   window.open('https://line.me/R/oaMessage/@crystalauraspa/?' + encodeURIComponent(msg), '_blank');
@@ -3241,6 +3256,7 @@ document.getElementById('btnLine').addEventListener('click', () => {
 // Send Email Request
 document.getElementById('btnEmail').addEventListener('click', () => {
   const d = getFormData();
+  captureEnquiry(d, 'email');
   const subject = 'Booking Request - ' + d.service + ' - ' + d.date;
   const body =
     'Hello Crystal Aura Spa,\n\n' +

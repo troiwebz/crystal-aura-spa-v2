@@ -145,6 +145,22 @@ if ($authed && isset($_POST['blog_delete'])) {
 if ($authed && isset($_GET['edit'])) {
   foreach ($POSTS as $p) if ($p['id'] === $_GET['edit']) { $edit_post = $p; break; }
 }
+// ---------- Bookings ----------
+$BOOK_FILE = __DIR__ . '/data/bookings.json';
+$BOOKINGS = file_exists($BOOK_FILE) ? (json_decode(file_get_contents($BOOK_FILE), true) ?: []) : [];
+if ($authed && isset($_POST['booking_status'])) {
+  foreach ($BOOKINGS as $i => $b) if ($b['id'] === $_POST['booking_status']) {
+    $BOOKINGS[$i]['status'] = $BOOKINGS[$i]['status'] === 'new' ? 'contacted' : 'new'; break;
+  }
+  file_put_contents($BOOK_FILE, json_encode($BOOKINGS, JSON_PRETTY_PRINT|JSON_UNESCAPED_UNICODE|JSON_UNESCAPED_SLASHES));
+  $saved = true; $notice = 'Booking status updated';
+}
+if ($authed && isset($_POST['booking_delete'])) {
+  $BOOKINGS = array_values(array_filter($BOOKINGS, fn($b) => $b['id'] !== $_POST['booking_delete']));
+  file_put_contents($BOOK_FILE, json_encode($BOOKINGS, JSON_PRETTY_PRINT|JSON_UNESCAPED_UNICODE|JSON_UNESCAPED_SLASHES));
+  $saved = true; $notice = 'Booking enquiry deleted';
+}
+$new_bookings = count(array_filter($BOOKINGS, fn($b) => ($b['status'] ?? 'new') === 'new'));
 $seo = $S['seo']; $biz = $S['business'];
 function e($v){ return htmlspecialchars($v ?? '', ENT_QUOTES, 'UTF-8'); }
 
@@ -423,6 +439,7 @@ a{text-decoration:none;color:inherit}
       <div class="sb-item" data-tab="serp">🎯 <span class="lbl">SERP Preview</span></div>
       <div class="sb-item" data-tab="seoscore">📊 <span class="lbl">SEO Score</span><span class="badge"><?= $totalPass ?>/<?= $totalChecks ?></span></div>
       <div class="sb-group">SITE</div>
+      <div class="sb-item" data-tab="bookings">📅 <span class="lbl">Bookings</span><?= $new_bookings ? '<span class="badge" style="background:#c0392b;color:#fff">'.$new_bookings.' new</span>' : '<span class="badge">'.count($BOOKINGS).'</span>' ?></div>
       <div class="sb-item" data-tab="blog">✍️ <span class="lbl">Blog</span><span class="badge"><?= count($POSTS) ?></span></div>
       <div class="sb-item" data-tab="settings">⚙️ <span class="lbl">Settings</span></div>
       <div class="sb-item soon">📝 <span class="lbl">Content</span><span class="badge">SOON</span></div>
@@ -449,6 +466,11 @@ a{text-decoration:none;color:inherit}
           <div class="ov-num" style="color:var(--green)"><?= $totalPass ?>/<?= $totalChecks ?></div>
           <div class="ov-label">SEO Score</div>
           <div class="ov-sub"><?= $totalPass === $totalChecks ? 'All 5 blocks perfect ✓' : ($totalChecks-$totalPass).' need attention' ?></div>
+        </div>
+        <div class="ov-card" data-go="bookings">
+          <div class="ov-num" style="color:<?= $new_bookings ? '#c0392b' : 'var(--gold-dark)' ?>"><?= count($BOOKINGS) ?></div>
+          <div class="ov-label">Booking Enquiries</div>
+          <div class="ov-sub"><?= $new_bookings ?> new · <?= count($BOOKINGS) - $new_bookings ?> contacted</div>
         </div>
         <div class="ov-card" data-go="blog">
           <div class="ov-num"><?= count($POSTS) ?></div>
@@ -820,6 +842,43 @@ a{text-decoration:none;color:inherit}
           <li><span class="ok <?= $c[1] ? '' : 'warn' ?>"><?= $c[1] ? '✓' : '!' ?></span><?= e($c[0]) ?></li>
           <?php endforeach; ?>
         </ul>
+      </div>
+    </div>
+
+    <!-- ============ BOOKINGS TAB ============ -->
+    <div class="tab" id="tab-bookings">
+      <div class="card">
+        <div class="card-h">📅 Booking Enquiries (<?= count($BOOKINGS) ?>)
+          <span style="margin-left:auto;font-size:12px;color:var(--muted)">Every form submission is captured here, even when guests continue to WhatsApp / LINE / email</span>
+        </div>
+        <?php if (empty($BOOKINGS)): ?>
+          <div class="card-b" style="color:var(--muted)">No enquiries yet. When a visitor fills the booking form and taps "Book via WhatsApp" (or LINE / Email), their details appear here automatically.</div>
+        <?php else: ?>
+        <div class="card-b" style="padding:0">
+          <?php foreach ($BOOKINGS as $b): $isNew = ($b['status'] ?? 'new') === 'new'; ?>
+          <div style="padding:16px 20px;border-bottom:1px solid #f3eee4;<?= $isNew ? 'background:#fdf9f0' : '' ?>">
+            <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+              <span style="font-size:10px;font-weight:800;letter-spacing:0.08em;padding:3px 10px;border-radius:12px;<?= $isNew ? 'background:#c0392b;color:#fff' : 'background:#e6f6ec;color:#1d6b3c' ?>"><?= $isNew ? 'NEW' : 'CONTACTED' ?></span>
+              <strong><?= e($b['name']) ?></strong>
+              <span style="color:var(--muted);font-size:12.5px">via <?= e(ucfirst($b['channel'])) ?> · <?= e($b['ts']) ?></span>
+              <span style="margin-left:auto;display:flex;gap:8px">
+                <?php if ($b['phone'] && $b['phone'] !== 'N/A'): ?><a href="https://wa.me/<?= e(preg_replace('/\D/','',$b['phone'])) ?>" target="_blank" style="color:#1aad52;font-size:12px;font-weight:700">WhatsApp ↗</a><?php endif; ?>
+                <button class="btn btn-ghost" style="padding:4px 12px;font-size:11px" name="booking_status" value="<?= e($b['id']) ?>" form="blogform"><?= $isNew ? '✓ Mark contacted' : '↺ Mark new' ?></button>
+                <button class="btn btn-ghost" style="padding:4px 10px;font-size:11px;color:#c0392b" name="booking_delete" value="<?= e($b['id']) ?>" form="blogform" onclick="return confirm('Delete this enquiry?')">✕</button>
+              </span>
+            </div>
+            <div style="display:flex;gap:18px;flex-wrap:wrap;margin-top:8px;font-size:13px;color:#4a4036">
+              <span>💆 <?= e($b['service'] ?: '—') ?><?= $b['duration'] && $b['duration'] !== 'N/A' ? ' · ' . e($b['duration']) : '' ?></span>
+              <span>📅 <?= e($b['date'] ?: '—') ?> <?= e($b['time'] !== 'N/A' ? $b['time'] : '') ?></span>
+              <span>👥 <?= e($b['people'] ?: '—') ?></span>
+              <span>📞 <?= e($b['phone'] ?: '—') ?></span>
+              <?php if ($b['email'] && $b['email'] !== 'N/A'): ?><span>✉️ <?= e($b['email']) ?></span><?php endif; ?>
+            </div>
+            <?php if ($b['notes'] && $b['notes'] !== 'None'): ?><div style="margin-top:6px;font-size:12.5px;color:var(--muted)">📝 <?= e($b['notes']) ?></div><?php endif; ?>
+          </div>
+          <?php endforeach; ?>
+        </div>
+        <?php endif; ?>
       </div>
     </div>
 
