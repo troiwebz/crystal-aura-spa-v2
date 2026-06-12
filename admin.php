@@ -10,11 +10,13 @@ function check_pass($input, $S, $DEFAULT_PASS) {
   if (strpos($h, '$2y$') === 0 && strlen($h) > 50) return password_verify($input, $h);
   return $input === $DEFAULT_PASS; // first-run default
 }
+$ADMIN_EMAIL = $S['admin']['email'] ?? 'admin@crystalauraspa.com';
 if (isset($_POST['do_login'])) {
-  if (check_pass($_POST['password'] ?? '', $S, $DEFAULT_PASS)) {
+  $email_ok = strcasecmp(trim($_POST['email'] ?? ''), $ADMIN_EMAIL) === 0;
+  if ($email_ok && check_pass($_POST['password'] ?? '', $S, $DEFAULT_PASS)) {
     $_SESSION['auth'] = true;
     header('Location: admin.php'); exit;
-  } else { $login_error = 'Wrong password'; }
+  } else { $login_error = $email_ok ? 'Wrong password' : 'Unknown email address'; }
 }
 if (isset($_GET['logout'])) { session_destroy(); header('Location: admin.php'); exit; }
 $authed = !empty($_SESSION['auth']);
@@ -135,11 +137,22 @@ a{text-decoration:none;color:inherit}
 <?php if (!$authed): ?>
 <div class="login-wrap">
   <form class="login-box" method="post">
-    <h1>Crystal <span style="color:var(--gold)">Aura</span> Admin</h1>
+    <svg width="92" height="76" viewBox="0 0 120 100" fill="none" style="margin-bottom:10px">
+      <path d="M60 8 L63 16 L71 18 L63 20 L60 28 L57 20 L49 18 L57 16 Z" fill="#c9a96e"/>
+      <path d="M24 88 A 42 42 0 1 1 96 88" stroke="#c9a96e" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+      <path d="M60 42 C 52 56 52 68 60 76 C 68 68 68 56 60 42 Z" fill="rgba(238,190,194,0.85)" stroke="#c9a96e" stroke-width="2"/>
+      <path d="M44 50 C 40 62 46 72 60 76 C 56 64 52 56 44 50 Z" fill="rgba(238,190,194,0.7)" stroke="#c9a96e" stroke-width="2"/>
+      <path d="M76 50 C 80 62 74 72 60 76 C 64 64 68 56 76 50 Z" fill="rgba(238,190,194,0.7)" stroke="#c9a96e" stroke-width="2"/>
+      <path d="M30 60 C 30 70 40 77 60 76 C 48 70 38 66 30 60 Z" fill="rgba(238,190,194,0.55)" stroke="#c9a96e" stroke-width="2"/>
+      <path d="M90 60 C 90 70 80 77 60 76 C 72 70 82 66 90 60 Z" fill="rgba(238,190,194,0.55)" stroke="#c9a96e" stroke-width="2"/>
+    </svg>
+    <h1>Crystal <span style="color:var(--gold)">Aura</span> Massage &amp; Spa</h1>
     <p>Site Dashboard &amp; SEO Setup</p>
     <?php if (!empty($login_error)): ?><div class="login-err"><?= e($login_error) ?></div><?php endif; ?>
-    <input type="password" name="password" placeholder="Password" autofocus>
+    <input type="email" name="email" placeholder="Email" value="<?= e($ADMIN_EMAIL) ?>">
+    <input type="password" name="password" placeholder="Password" value="<?= e($DEFAULT_PASS) ?>">
     <button name="do_login" value="1">Sign In</button>
+    <p style="margin-top:14px;margin-bottom:0;font-size:11.5px;color:#a39782">Demo credentials are pre-filled — just click Sign In</p>
   </form>
 </div>
 <?php else: ?>

@@ -45,6 +45,7 @@
         "tiktok": "https://www.tiktok.com/@crystalauraspa"
     },
     "admin": {
-        "password_hash": "$2y$10$REPLACED_ON_FIRST_RUN"
+        "password_hash": "$2y$10$REPLACED_ON_FIRST_RUN",
+        "email": "admin@crystalauraspa.com"
     }
 }
