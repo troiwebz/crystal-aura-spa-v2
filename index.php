@@ -201,13 +201,10 @@ h2.section-title.white::after{background:linear-gradient(90deg,rgba(255,255,255,
 .nav-logo{font-family:var(--font-serif);font-size:19px;font-weight:500;color:#fff;letter-spacing:0.03em;margin-right:16px;white-space:nowrap;flex-shrink:0;display:inline-flex;align-items:center;gap:7px;text-decoration:none}
 .nav-lotus{flex-shrink:0;color:var(--gold);display:block;width:28px;height:23px;filter:drop-shadow(0 0 3px rgba(201,169,110,0.6))}
 .nav-logo span{color:var(--gold)}
-.nav-logo-text-sub{font-size:0.65em;opacity:0.85}
-/* Desktop: show inline text, hide 2-line words block */
-.nav-logo-words{display:none}
-.nav-logo-desktop{color:inherit}
-.nav-logo-desktop span{color:var(--gold)}
-/* Mobile brand logo icon - matches actual brand logo */
+/* Mobile brand logo icon - hidden, using nav-lotus instead */
 .nav-brand-icon{display:none}
+.nav-logo-words{display:none}
+.nav-logo-desktop{display:none}
 .nav-links{display:flex;gap:18px;flex:1;justify-content:center}
 @media(max-width:1200px){
   .nav-links{display:none}
@@ -982,17 +979,9 @@ a.f2-contact-row:hover{color:#b07c3e}
   .nav-links{display:none}
   .nav-phone{display:none}
   .hamburger{display:flex}
-  /* Mobile logo: icon + 2-line text, fills available space */
-  .nav-logo{display:flex;align-items:center;gap:10px;flex:1;margin-right:12px;white-space:normal}
-  .nav-lotus{display:none !important}
-  .nav-logo-desktop{display:none !important}
-  .nav-brand-icon{display:block !important;width:46px !important;height:54px !important;min-width:46px;flex-shrink:0;filter:drop-shadow(0 0 5px rgba(201,169,110,0.9))}
-  .nav-logo-words{display:flex !important;flex-direction:column;line-height:1.35}
-  .nav-logo-words .line1{font-family:var(--font-serif);font-size:20px;font-weight:700;color:#fff;letter-spacing:0.2px;white-space:nowrap}
-  .nav-logo-words .line1 .gold{color:var(--gold)}
-  .nav-logo-words .line2{font-family:var(--font-serif);font-size:15px;font-weight:400;color:rgba(255,255,255,0.9);letter-spacing:0.2px;white-space:nowrap}
-  #navbar.scrolled .nav-logo-words .line1{color:var(--dark)}
-  #navbar.scrolled .nav-logo-words .line2{color:var(--dark);opacity:0.75}
+  /* Mobile logo */
+  .nav-logo{flex:1;font-size:15px;line-height:1.35;white-space:normal;margin-right:10px;align-items:center;gap:8px}
+  .nav-lotus{width:30px;height:25px;flex-shrink:0}
   .nav-right{gap:8px;flex-shrink:0}
   .nav-btn{padding:8px 12px;font-size:11px;white-space:nowrap;flex-shrink:0}
   /* Sections */
@@ -1187,7 +1176,6 @@ a.f2-contact-row:hover{color:#b07c3e}
 <!-- NAVBAR -->
 <nav id="navbar">
   <a href="#" class="nav-logo">
-    <!-- Desktop: simple lotus icon -->
     <svg class="nav-lotus" width="34" height="28" viewBox="0 0 120 100" fill="none" aria-hidden="true">
       <path d="M60 8 L63 16 L71 18 L63 20 L60 28 L57 20 L49 18 L57 16 Z" fill="currentColor"/>
       <path d="M24 88 A 42 42 0 1 1 96 88" stroke="currentColor" stroke-width="4" fill="none" stroke-linecap="round"/>
@@ -1197,29 +1185,7 @@ a.f2-contact-row:hover{color:#b07c3e}
       <path d="M30 60 C 30 70 40 77 60 76 C 48 70 38 66 30 60 Z" fill="rgba(238,190,194,0.55)" stroke="currentColor" stroke-width="3.5"/>
       <path d="M90 60 C 90 70 80 77 60 76 C 72 70 82 66 90 60 Z" fill="rgba(238,190,194,0.55)" stroke="currentColor" stroke-width="3.5"/>
     </svg>
-    <!-- Mobile: actual brand logo icon (arch + star + pink lotus) — sized by CSS -->
-    <svg class="nav-brand-icon" viewBox="10 2 100 108" fill="none" aria-hidden="true">
-      <!-- 4-pointed star at top -->
-      <path d="M60 4 L62.8 11 L70 12 L62.8 13 L60 20 L57.2 13 L50 12 L57.2 11 Z" fill="#C9A96E"/>
-      <!-- Arch/semicircle -->
-      <path d="M18 108 A 44 44 0 1 1 102 108" stroke="#C9A96E" stroke-width="4" fill="none" stroke-linecap="round"/>
-      <!-- Lotus center petal -->
-      <path d="M60 58 C 54 70 54 86 60 94 C 66 86 66 70 60 58 Z" fill="#F2C8CC" stroke="#C9A96E" stroke-width="2.5"/>
-      <!-- Lotus left inner -->
-      <path d="M46 66 C 41 80 47 91 60 94 C 56 82 52 74 46 66 Z" fill="#F2C8CC" stroke="#C9A96E" stroke-width="2.5"/>
-      <!-- Lotus right inner -->
-      <path d="M74 66 C 79 80 73 91 60 94 C 64 82 68 74 74 66 Z" fill="#F2C8CC" stroke="#C9A96E" stroke-width="2.5"/>
-      <!-- Lotus left outer -->
-      <path d="M30 78 C 30 91 40 98 60 96 C 48 90 38 86 30 78 Z" fill="#EAB4BA" stroke="#C9A96E" stroke-width="2.5"/>
-      <!-- Lotus right outer -->
-      <path d="M90 78 C 90 91 80 98 60 96 C 72 90 82 86 90 78 Z" fill="#EAB4BA" stroke="#C9A96E" stroke-width="2.5"/>
-    </svg>
-    <span class="nav-logo-words">
-      <span class="line1">Crystal <span class="gold">Aura</span></span>
-      <span class="line2">Massage &amp; Spa</span>
-    </span>
-    <!-- Desktop text (hidden on mobile) -->
-    <span class="nav-logo-desktop">Crystal <span>Aura</span> Massage &amp; Spa</span>
+    Crystal <span>Aura</span> Massage &amp; Spa
   </a>
   <ul class="nav-links">
     <li><a href="#pricing">Services</a></li>
