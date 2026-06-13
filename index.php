@@ -623,8 +623,8 @@ h2.section-title.white::after{background:linear-gradient(90deg,rgba(255,255,255,
   .price-col-label{display:block;font-size:8px;font-weight:700;color:var(--text-light);letter-spacing:0.04em;text-transform:uppercase;margin-bottom:2px}
   .price-col-value{color:var(--gold);font-weight:700;font-size:12px}
   .price-col-value::before{content:'฿';font-size:10px;margin-right:1px}
-  .price-book-col{padding:8px 4px;width:21%}
-  .price-book-btn{padding:6px 8px;font-size:9px;letter-spacing:0.05em;border-radius:5px}
+  .price-book-col{padding:6px 4px;width:21%}
+  .price-book-btn{padding:0;font-size:10px;letter-spacing:0.04em;border-radius:6px;min-height:44px;width:100%;display:flex;align-items:center;justify-content:center;line-height:1.2;touch-action:manipulation}
 }
 /* Mobile price cards — shown only on mobile via JS class */
 .price-card-list{display:none}
