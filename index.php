@@ -971,11 +971,14 @@ a.f2-contact-row:hover{color:#b07c3e}
 }
 @media(max-width:768px){
   /* Navbar */
-  #navbar{padding:10px 16px}
+  #navbar{padding:10px 16px;background:#fff !important;box-shadow:0 2px 12px rgba(0,0,0,0.1)}
   .nav-links{display:none}
   .nav-phone{display:none}
   .hamburger{display:flex}
-  .nav-logo{font-size:13px;white-space:nowrap;flex-shrink:1}
+  #navbar .hamburger span{background:#1a1a1a}
+  .nav-logo{font-size:15px;white-space:nowrap;flex-shrink:1;color:#1a1a1a !important;font-weight:800}
+  .nav-logo span{color:#b8860b !important;font-weight:800}
+  .nav-lotus{color:#b8860b}
   .nav-right{gap:10px;flex-shrink:0}
   .nav-btn{padding:8px 14px;font-size:10px;white-space:nowrap;flex-shrink:0}
   /* Sections */
