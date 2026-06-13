@@ -988,8 +988,11 @@ a.f2-contact-row:hover{color:#b07c3e}
   #navbar .nav-logo span{color:#b8860b;font-weight:800}
   #navbar .hamburger span{background:var(--dark)}
   /* Mobile logo */
-  .nav-logo{flex:1;font-size:16px;line-height:1.35;white-space:normal;margin-right:10px;align-items:center;gap:8px;font-weight:800}
+  .nav-logo{flex:1;font-size:16px;line-height:1.2;white-space:normal;margin-right:10px;align-items:center;gap:8px;font-weight:800}
   .nav-lotus{width:30px;height:25px;flex-shrink:0;color:var(--gold)}
+  .logo-text-wrap{display:flex;flex-direction:column}
+  .logo-text-wrap > span:first-child,.logo-text-wrap > .logo-sub{display:block;white-space:nowrap}
+  .logo-sub{font-size:13px;font-weight:600;color:#444;letter-spacing:0.2px}
   .nav-right{gap:8px;flex-shrink:0}
   .nav-btn{padding:8px 12px;font-size:11px;white-space:nowrap;flex-shrink:0}
   /* Sections */
@@ -1193,7 +1196,7 @@ a.f2-contact-row:hover{color:#b07c3e}
       <path d="M30 60 C 30 70 40 77 60 76 C 48 70 38 66 30 60 Z" fill="rgba(238,190,194,0.55)" stroke="currentColor" stroke-width="3.5"/>
       <path d="M90 60 C 90 70 80 77 60 76 C 72 70 82 66 90 60 Z" fill="rgba(238,190,194,0.55)" stroke="currentColor" stroke-width="3.5"/>
     </svg>
-    Crystal <span>Aura</span> Massage &amp; Spa
+    <span class="logo-text-wrap">Crystal <span>Aura</span><span class="logo-sub"> Massage &amp; Spa</span></span>
   </a>
   <ul class="nav-links">
     <li><a href="#pricing">Services</a></li>
