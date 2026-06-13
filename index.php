@@ -3126,9 +3126,10 @@ function bookTreatment(btn) {
   const row = btn.closest('.price-row');
   const name = row.querySelector('.price-row-name').textContent.trim();
 
-  // On mobile: open instant bottom sheet instead of slow scroll
+  // On mobile: open WhatsApp instantly with service name pre-filled
   if (window.innerWidth <= 768) {
-    openMobSheet(name);
+    var msg = encodeURIComponent('Hi! I would like to book: ' + name + '. Please let me know your availability.');
+    window.open('https://wa.me/66959932861?text=' + msg, '_blank');
     return;
   }
 
