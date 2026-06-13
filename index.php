@@ -203,6 +203,8 @@ h2.section-title.white::after{background:linear-gradient(90deg,rgba(255,255,255,
 .nav-logo{font-family:var(--font-serif);font-size:19px;font-weight:500;color:#fff;letter-spacing:0.03em;margin-right:16px;white-space:nowrap;flex-shrink:0;display:inline-flex;align-items:center;gap:7px;text-decoration:none}
 .nav-lotus{flex-shrink:0;color:var(--gold);display:block;width:28px;height:23px}
 .nav-logo span{color:var(--gold)}
+.mob-text{display:none}
+.mob-hide{display:inline}
 .nav-links{display:flex;gap:18px;flex:1;justify-content:center}
 @media(max-width:1200px){
   .nav-links{display:none}
@@ -978,12 +980,17 @@ a.f2-contact-row:hover{color:#b07c3e}
   .nav-phone{display:none}
   .hamburger{display:flex}
   #navbar .hamburger span{background:#1a1a1a}
-  /* Hide Book Now on mobile — more space for logo */
   #navbar .btn-gold{display:none !important}
-  .nav-logo{font-size:17px;white-space:nowrap;flex:1;color:#1a1a1a !important;font-weight:800;gap:10px}
-  .nav-logo span{color:#b8860b !important;font-weight:800}
-  .nav-lotus{width:52px !important;height:60px !important;flex-shrink:0}
+  /* Stacked logo: icon on top, text below */
+  .nav-logo{flex-direction:column;align-items:flex-start;gap:2px;flex:1;font-size:0;color:#1a1a1a !important;font-weight:800;white-space:normal;line-height:1}
+  .nav-logo .mob-text{display:flex;flex-direction:column;line-height:1.25}
+  .nav-logo .mob-line1{font-family:var(--font-serif);font-size:17px;font-weight:800;color:#1a1a1a;white-space:nowrap}
+  .nav-logo .mob-line1 span{color:#b8860b}
+  .nav-logo .mob-line2{font-family:var(--font-serif);font-size:14px;font-weight:600;color:#333;white-space:nowrap}
+  .nav-logo .mob-hide{display:none}
+  .nav-lotus{width:56px !important;height:64px !important;flex-shrink:0;margin-bottom:2px}
   .nav-right{gap:10px;flex-shrink:0}
+  #navbar{padding:8px 16px}
   /* Sections */
   #hero{height:100svh;min-height:580px}
   .hero-arrows{display:none}
@@ -1210,7 +1217,11 @@ if(window.innerWidth <= 768){
       <!-- Lotus right outer petal -->
       <path d="M90 76 C 91 90 81 98 60 96 C 72 90 83 85 90 76 Z" fill="#EDADB5" stroke="#C9A96E" stroke-width="2"/>
     </svg>
-    Crystal <span>Aura</span> Massage &amp; Spa
+    <span class="mob-hide">Crystal <span>Aura</span> Massage &amp; Spa</span>
+    <span class="mob-text">
+      <span class="mob-line1">Crystal <span>Aura</span></span>
+      <span class="mob-line2">Massage &amp; Spa</span>
+    </span>
   </a>
   <ul class="nav-links">
     <li><a href="#pricing">Services</a></li>
