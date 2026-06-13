@@ -974,23 +974,22 @@ a.f2-contact-row:hover{color:#b07c3e}
   .pkg-duration-unit{font-size:9px !important}
 }
 @media(max-width:768px){
-  /* Navbar */
-  #navbar{padding:10px 16px;background:#fff !important;box-shadow:0 2px 12px rgba(0,0,0,0.1)}
+  /* Mobile navbar: cream centered logo */
+  #navbar{background:#f0ece4 !important;box-shadow:0 2px 12px rgba(0,0,0,0.08);padding:12px 16px 14px;flex-direction:column;align-items:center;position:relative;min-height:unset}
   .nav-links{display:none}
   .nav-phone{display:none}
+  .nav-right{position:absolute;top:14px;right:16px;gap:8px}
   .hamburger{display:flex}
-  #navbar .hamburger span{background:#1a1a1a}
+  #navbar .hamburger span{background:#2c2418}
   #navbar .btn-gold{display:none !important}
-  /* Stacked logo: icon on top, text below */
-  .nav-logo{flex-direction:column;align-items:flex-start;gap:2px;flex:1;font-size:0;color:#1a1a1a !important;font-weight:800;white-space:normal;line-height:1}
-  .nav-logo .mob-text{display:flex;flex-direction:column;line-height:1.25}
-  .nav-logo .mob-line1{font-family:var(--font-serif);font-size:17px;font-weight:800;color:#1a1a1a;white-space:nowrap}
-  .nav-logo .mob-line1 span{color:#b8860b}
-  .nav-logo .mob-line2{font-family:var(--font-serif);font-size:14px;font-weight:600;color:#333;white-space:nowrap}
+  /* Centered stacked logo */
+  .nav-logo{flex-direction:column;align-items:center;text-align:center;gap:6px;flex:none;width:100%;margin-right:0;font-size:0;color:#2c2418 !important}
+  .nav-lotus{width:70px !important;height:80px !important;flex-shrink:0}
+  .nav-logo .mob-text{display:flex;flex-direction:column;align-items:center;gap:0;line-height:1.3}
+  .nav-logo .mob-line1{font-family:var(--font-serif);font-size:20px;font-weight:400;color:#2c2418;white-space:nowrap;letter-spacing:0.02em}
+  .nav-logo .mob-line1 span{color:#b8973a}
+  .nav-logo .mob-line2{font-family:var(--font-serif);font-size:20px;font-weight:400;color:#2c2418;white-space:nowrap;letter-spacing:0.02em}
   .nav-logo .mob-hide{display:none}
-  .nav-lotus{width:56px !important;height:64px !important;flex-shrink:0;margin-bottom:2px}
-  .nav-right{gap:10px;flex-shrink:0}
-  #navbar{padding:8px 16px}
   /* Sections */
   #hero{height:100svh;min-height:580px}
   .hero-arrows{display:none}
@@ -1200,27 +1199,27 @@ if(window.innerWidth <= 768){
 <!-- NAVBAR -->
 <nav id="navbar">
   <a href="#" class="nav-logo">
-    <!-- Brand logo: star + arch + pink lotus (desktop: small, mobile: large) -->
-    <svg class="nav-lotus" viewBox="0 0 120 130" fill="none" aria-hidden="true">
+    <!-- Brand logo: exact recreation — 4pt star + arch + pink lotus -->
+    <svg class="nav-lotus" viewBox="0 0 120 115" fill="none" aria-hidden="true">
       <!-- 4-pointed star -->
-      <path d="M60 2 L62.5 9 L70 10 L62.5 11 L60 18 L57.5 11 L50 10 L57.5 9 Z" fill="#C9A96E"/>
-      <!-- Arch semicircle -->
-      <path d="M16 112 A 46 46 0 1 1 104 112" stroke="#C9A96E" stroke-width="3" fill="none" stroke-linecap="round"/>
-      <!-- Lotus center petal -->
-      <path d="M60 55 C 53 68 53 85 60 94 C 67 85 67 68 60 55 Z" fill="#F2C4CA" stroke="#C9A96E" stroke-width="2"/>
-      <!-- Lotus left inner petal -->
-      <path d="M46 63 C 41 78 47 90 60 94 C 56 80 51 70 46 63 Z" fill="#F2C4CA" stroke="#C9A96E" stroke-width="2"/>
-      <!-- Lotus right inner petal -->
-      <path d="M74 63 C 79 78 73 90 60 94 C 64 80 69 70 74 63 Z" fill="#F2C4CA" stroke="#C9A96E" stroke-width="2"/>
-      <!-- Lotus left outer petal -->
-      <path d="M30 76 C 29 90 39 98 60 96 C 48 90 37 85 30 76 Z" fill="#EDADB5" stroke="#C9A96E" stroke-width="2"/>
-      <!-- Lotus right outer petal -->
-      <path d="M90 76 C 91 90 81 98 60 96 C 72 90 83 85 90 76 Z" fill="#EDADB5" stroke="#C9A96E" stroke-width="2"/>
+      <path d="M60 3 L61.8 8.5 L67.5 10 L61.8 11.5 L60 17 L58.2 11.5 L52.5 10 L58.2 8.5 Z" fill="#C9A76B"/>
+      <!-- Arch: open semicircle, opens at bottom -->
+      <path d="M15 105 A 46 46 0 1 1 105 105" stroke="#C9A76B" stroke-width="2.8" fill="none" stroke-linecap="round"/>
+      <!-- Lotus: center tall petal -->
+      <path d="M60 52 C 56 63 55 78 60 88 C 65 78 64 63 60 52 Z" fill="#F0C0C8" stroke="#C9A76B" stroke-width="1.8"/>
+      <!-- Lotus: left inner petal -->
+      <path d="M49 59 C 44 72 48 85 60 88 C 57 76 53 67 49 59 Z" fill="#F0C0C8" stroke="#C9A76B" stroke-width="1.8"/>
+      <!-- Lotus: right inner petal -->
+      <path d="M71 59 C 76 72 72 85 60 88 C 63 76 67 67 71 59 Z" fill="#F0C0C8" stroke="#C9A76B" stroke-width="1.8"/>
+      <!-- Lotus: left outer petal (flatter, wider) -->
+      <path d="M34 72 C 30 84 38 93 60 90 C 48 86 38 81 34 72 Z" fill="#EBB0BA" stroke="#C9A76B" stroke-width="1.8"/>
+      <!-- Lotus: right outer petal (flatter, wider) -->
+      <path d="M86 72 C 90 84 82 93 60 90 C 72 86 82 81 86 72 Z" fill="#EBB0BA" stroke="#C9A76B" stroke-width="1.8"/>
     </svg>
     <span class="mob-hide">Crystal <span>Aura</span> Massage &amp; Spa</span>
     <span class="mob-text">
-      <span class="mob-line1">Crystal <span>Aura</span></span>
-      <span class="mob-line2">Massage &amp; Spa</span>
+      <span class="mob-line1">Crystal <span>Aura</span> Massage &amp;</span>
+      <span class="mob-line2">Spa</span>
     </span>
   </a>
   <ul class="nav-links">
