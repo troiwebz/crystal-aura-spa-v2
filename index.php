@@ -199,7 +199,7 @@ h2.section-title.white::after{background:linear-gradient(90deg,rgba(255,255,255,
 #navbar.scrolled .nav-links a:hover{color:var(--gold)}
 #navbar.scrolled .nav-phone{color:var(--dark)}
 .nav-logo{font-family:var(--font-serif);font-size:19px;font-weight:500;color:#fff;letter-spacing:0.03em;margin-right:16px;white-space:nowrap;flex-shrink:0;display:inline-flex;align-items:center;gap:7px}
-.nav-lotus{flex-shrink:0;color:var(--gold);display:block;width:28px;height:23px}
+.nav-lotus{flex-shrink:0;color:var(--gold);display:block;width:28px;height:23px;filter:drop-shadow(0 0 3px rgba(201,169,110,0.6))}
 .nav-logo span{color:var(--gold)}
 .nav-links{display:flex;gap:18px;flex:1;justify-content:center}
 @media(max-width:1200px){
@@ -975,7 +975,7 @@ a.f2-contact-row:hover{color:#b07c3e}
   .nav-links{display:none}
   .nav-phone{display:none}
   .hamburger{display:flex}
-  .nav-logo{font-size:13px;white-space:nowrap;flex-shrink:1}
+  .nav-logo{font-size:11px;white-space:nowrap;flex-shrink:1;text-shadow:0 1px 3px rgba(201,169,110,0.8);letter-spacing:0.3px;font-weight:600}
   .nav-right{gap:10px;flex-shrink:0}
   .nav-btn{padding:8px 14px;font-size:10px;white-space:nowrap;flex-shrink:0}
   /* Sections */
