@@ -198,16 +198,9 @@ h2.section-title.white::after{background:linear-gradient(90deg,rgba(255,255,255,
 #navbar.scrolled .nav-links a{color:var(--dark)}
 #navbar.scrolled .nav-links a:hover{color:var(--gold)}
 #navbar.scrolled .nav-phone{color:var(--dark)}
-.nav-logo{font-family:var(--font-serif);font-size:19px;font-weight:500;color:#fff;letter-spacing:0.03em;margin-right:16px;white-space:nowrap;flex-shrink:0;display:inline-flex;align-items:center;gap:7px;text-decoration:none;transition:transform 0.3s ease,filter 0.3s ease}
-.nav-logo:hover{transform:translateY(-1px);filter:drop-shadow(0 4px 12px rgba(201,169,110,0.5))}
-.nav-lotus{flex-shrink:0;color:var(--gold);display:block;width:28px;height:23px;filter:drop-shadow(0 0 4px rgba(201,169,110,0.7));animation:lotusGlow 2.5s ease-in-out infinite}
-@keyframes lotusGlow{0%,100%{filter:drop-shadow(0 0 4px rgba(201,169,110,0.7))}50%{filter:drop-shadow(0 0 10px rgba(201,169,110,1)) drop-shadow(0 0 18px rgba(201,169,110,0.5))}}
-.nav-logo span{color:var(--gold);animation:goldShimmer 3s ease-in-out infinite}
-@keyframes goldShimmer{0%,100%{color:#C9A96E}50%{color:#e8c87a;text-shadow:0 0 8px rgba(201,169,110,0.8)}}
-/* Mobile brand logo icon - hidden, using nav-lotus instead */
-.nav-brand-icon{display:none}
-.nav-logo-words{display:none}
-.nav-logo-desktop{display:none}
+.nav-logo{font-family:var(--font-serif);font-size:19px;font-weight:500;color:#fff;letter-spacing:0.03em;margin-right:16px;white-space:nowrap;flex-shrink:0;display:inline-flex;align-items:center;gap:7px;text-decoration:none}
+.nav-lotus{flex-shrink:0;color:var(--gold);display:block;width:28px;height:23px}
+.nav-logo span{color:var(--gold)}
 .nav-links{display:flex;gap:18px;flex:1;justify-content:center}
 @media(max-width:1200px){
   .nav-links{display:none}
@@ -982,19 +975,9 @@ a.f2-contact-row:hover{color:#b07c3e}
   .nav-links{display:none}
   .nav-phone{display:none}
   .hamburger{display:flex}
-  /* Mobile: white navbar always */
-  #navbar{background:#fff !important;box-shadow:0 2px 12px rgba(0,0,0,0.1);padding:10px 16px}
-  #navbar .nav-logo{color:#1a1a1a;font-weight:800}
-  #navbar .nav-logo span{color:#b8860b;font-weight:800}
-  #navbar .hamburger span{background:var(--dark)}
-  /* Mobile logo */
-  .nav-logo{flex:1;font-size:16px;line-height:1.2;white-space:normal;margin-right:10px;align-items:center;gap:8px;font-weight:800}
-  .nav-lotus{width:30px;height:25px;flex-shrink:0;color:var(--gold)}
-  .logo-text-wrap{display:flex;flex-direction:column}
-  .logo-text-wrap > span:first-child,.logo-text-wrap > .logo-sub{display:block;white-space:nowrap}
-  .logo-sub{font-size:13px;font-weight:600;color:#444;letter-spacing:0.2px}
-  .nav-right{gap:8px;flex-shrink:0}
-  .nav-btn{padding:8px 12px;font-size:11px;white-space:nowrap;flex-shrink:0}
+  .nav-logo{font-size:13px;white-space:nowrap;flex-shrink:1}
+  .nav-right{gap:10px;flex-shrink:0}
+  .nav-btn{padding:8px 14px;font-size:10px;white-space:nowrap;flex-shrink:0}
   /* Sections */
   #hero{height:100svh;min-height:580px}
   .hero-arrows{display:none}
@@ -1196,7 +1179,7 @@ a.f2-contact-row:hover{color:#b07c3e}
       <path d="M30 60 C 30 70 40 77 60 76 C 48 70 38 66 30 60 Z" fill="rgba(238,190,194,0.55)" stroke="currentColor" stroke-width="3.5"/>
       <path d="M90 60 C 90 70 80 77 60 76 C 72 70 82 66 90 60 Z" fill="rgba(238,190,194,0.55)" stroke="currentColor" stroke-width="3.5"/>
     </svg>
-    <span class="logo-text-wrap">Crystal <span>Aura</span><span class="logo-sub"> Massage &amp; Spa</span></span>
+    Crystal <span>Aura</span> Massage &amp; Spa
   </a>
   <ul class="nav-links">
     <li><a href="#pricing">Services</a></li>
