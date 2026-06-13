@@ -983,13 +983,14 @@ a.f2-contact-row:hover{color:#b07c3e}
   .nav-phone{display:none}
   .hamburger{display:flex}
   /* Mobile logo: icon + 2-line text */
-  .nav-logo{display:flex;align-items:center;gap:8px;margin-right:0;flex-shrink:1;font-size:0;line-height:0;white-space:normal}
+  .nav-logo{display:flex;align-items:center;gap:8px;margin-right:0;flex-shrink:1;white-space:normal}
   .nav-lotus{display:none !important}
-  .nav-brand-icon{display:block !important;width:44px !important;height:52px !important;min-width:44px;flex-shrink:0;filter:drop-shadow(0 0 5px rgba(201,169,110,0.9))}
-  .nav-logo-words{display:flex !important;flex-direction:column;line-height:1.2}
-  .nav-logo-words .line1{font-family:var(--font-serif);font-size:13px;font-weight:600;color:#fff;letter-spacing:0.5px}
-  .nav-logo-words .line1 span{color:var(--gold)}
-  .nav-logo-words .line2{font-family:var(--font-serif);font-size:10px;font-weight:400;color:rgba(255,255,255,0.82);letter-spacing:0.8px;text-transform:uppercase}
+  .nav-logo-desktop{display:none !important}
+  .nav-brand-icon{display:block !important;width:40px !important;height:48px !important;min-width:40px;flex-shrink:0;filter:drop-shadow(0 0 5px rgba(201,169,110,0.9))}
+  .nav-logo-words{display:flex !important;flex-direction:column;line-height:1.25}
+  .nav-logo-words .line1{font-family:var(--font-serif);font-size:13px;font-weight:600;color:#fff;letter-spacing:0.3px}
+  .nav-logo-words .line1 .gold{color:var(--gold)}
+  .nav-logo-words .line2{font-family:var(--font-serif);font-size:10.5px;font-weight:400;color:rgba(255,255,255,0.85);letter-spacing:0.5px}
   #navbar.scrolled .nav-logo-words .line1{color:var(--dark)}
   #navbar.scrolled .nav-logo-words .line2{color:var(--dark);opacity:0.7}
   .nav-right{gap:10px;flex-shrink:0}
@@ -1213,11 +1214,11 @@ a.f2-contact-row:hover{color:#b07c3e}
       <!-- Lotus right outer -->
       <path d="M90 78 C 90 91 80 98 60 96 C 72 90 82 86 90 78 Z" fill="#EAB4BA" stroke="#C9A96E" stroke-width="2.5"/>
     </svg>
-    <span class="nav-logo-words" style="display:none">
-      <span class="line1">Crystal <span>Aura</span></span>
+    <span class="nav-logo-words">
+      <span class="line1">Crystal <span class="gold">Aura</span></span>
       <span class="line2">Massage &amp; Spa</span>
     </span>
-    <!-- Desktop text (hidden on mobile via .nav-logo-words override) -->
+    <!-- Desktop text (hidden on mobile) -->
     <span class="nav-logo-desktop">Crystal <span>Aura</span> Massage &amp; Spa</span>
   </a>
   <ul class="nav-links">
