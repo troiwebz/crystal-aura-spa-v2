@@ -978,11 +978,11 @@ a.f2-contact-row:hover{color:#b07c3e}
   .nav-links{display:none}
   .nav-phone{display:none}
   .hamburger{display:flex}
-  /* Hide ALL text on mobile — show only the brand icon */
-  .nav-logo{font-size:0;gap:0;margin-right:0;flex-shrink:0}
-  .nav-logo span,.nav-logo-text-sub{display:none !important}
-  .nav-lotus{display:none}
-  .nav-brand-icon{display:block !important;flex-shrink:0;width:52px;height:62px;filter:drop-shadow(0 0 5px rgba(201,169,110,0.8))}
+  /* Mobile logo: show brand icon only, big and clear */
+  .nav-logo{display:flex;align-items:center;gap:0;margin-right:0;flex-shrink:0;font-size:0;line-height:0}
+  .nav-logo > *:not(.nav-brand-icon){display:none !important}
+  .nav-lotus{display:none !important}
+  .nav-brand-icon{display:block !important;width:72px !important;height:86px !important;min-width:72px;filter:drop-shadow(0 0 6px rgba(201,169,110,0.9))}
   .nav-right{gap:10px;flex-shrink:0}
   .nav-btn{padding:8px 14px;font-size:10px;white-space:nowrap;flex-shrink:0}
   /* Sections */
