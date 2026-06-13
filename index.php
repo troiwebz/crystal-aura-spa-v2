@@ -987,10 +987,10 @@ a.f2-contact-row:hover{color:#b07c3e}
   .nav-lotus{display:none !important}
   .nav-logo-desktop{display:none !important}
   .nav-brand-icon{display:block !important;width:40px !important;height:48px !important;min-width:40px;flex-shrink:0;filter:drop-shadow(0 0 5px rgba(201,169,110,0.9))}
-  .nav-logo-words{display:flex !important;flex-direction:column;line-height:1.25}
-  .nav-logo-words .line1{font-family:var(--font-serif);font-size:13px;font-weight:600;color:#fff;letter-spacing:0.3px}
+  .nav-logo-words{display:flex !important;flex-direction:column;line-height:1.3}
+  .nav-logo-words .line1{font-family:var(--font-serif);font-size:16px;font-weight:700;color:#fff;letter-spacing:0.3px;white-space:nowrap}
   .nav-logo-words .line1 .gold{color:var(--gold)}
-  .nav-logo-words .line2{font-family:var(--font-serif);font-size:10.5px;font-weight:400;color:rgba(255,255,255,0.85);letter-spacing:0.5px}
+  .nav-logo-words .line2{font-family:var(--font-serif);font-size:13px;font-weight:400;color:rgba(255,255,255,0.9);letter-spacing:0.3px;white-space:nowrap}
   #navbar.scrolled .nav-logo-words .line1{color:var(--dark)}
   #navbar.scrolled .nav-logo-words .line2{color:var(--dark);opacity:0.7}
   .nav-right{gap:10px;flex-shrink:0}
