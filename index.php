@@ -974,14 +974,15 @@ a.f2-contact-row:hover{color:#b07c3e}
 }
 @media(max-width:768px){
   /* Navbar */
-  #navbar{padding:12px 16px}
+  #navbar{padding:10px 16px}
   .nav-links{display:none}
   .nav-phone{display:none}
   .hamburger{display:flex}
-  .nav-logo{font-size:10.5px;white-space:nowrap;flex-shrink:1;letter-spacing:0.4px;font-weight:600;gap:5px}
+  /* Hide ALL text on mobile — show only the brand icon */
+  .nav-logo{font-size:0;gap:0;margin-right:0;flex-shrink:0}
+  .nav-logo span,.nav-logo-text-sub{display:none !important}
   .nav-lotus{display:none}
-  .nav-brand-icon{display:block;flex-shrink:0;filter:drop-shadow(0 0 4px rgba(201,169,110,0.7))}
-  .nav-logo-text-sub{display:none}
+  .nav-brand-icon{display:block !important;flex-shrink:0;width:52px;height:62px;filter:drop-shadow(0 0 5px rgba(201,169,110,0.8))}
   .nav-right{gap:10px;flex-shrink:0}
   .nav-btn{padding:8px 14px;font-size:10px;white-space:nowrap;flex-shrink:0}
   /* Sections */
@@ -1186,22 +1187,22 @@ a.f2-contact-row:hover{color:#b07c3e}
       <path d="M30 60 C 30 70 40 77 60 76 C 48 70 38 66 30 60 Z" fill="rgba(238,190,194,0.55)" stroke="currentColor" stroke-width="3.5"/>
       <path d="M90 60 C 90 70 80 77 60 76 C 72 70 82 66 90 60 Z" fill="rgba(238,190,194,0.55)" stroke="currentColor" stroke-width="3.5"/>
     </svg>
-    <!-- Mobile: actual brand logo icon (arch + star + pink lotus) -->
-    <svg class="nav-brand-icon" width="38" height="46" viewBox="0 0 120 145" fill="none" aria-hidden="true">
+    <!-- Mobile: actual brand logo icon (arch + star + pink lotus) — sized by CSS -->
+    <svg class="nav-brand-icon" viewBox="10 2 100 108" fill="none" aria-hidden="true">
       <!-- 4-pointed star at top -->
-      <path d="M60 4 L62.5 10 L69 12 L62.5 14 L60 20 L57.5 14 L51 12 L57.5 10 Z" fill="#C9A96E"/>
+      <path d="M60 4 L62.8 11 L70 12 L62.8 13 L60 20 L57.2 13 L50 12 L57.2 11 Z" fill="#C9A96E"/>
       <!-- Arch/semicircle -->
-      <path d="M18 108 A 44 44 0 1 1 102 108" stroke="#C9A96E" stroke-width="3.5" fill="none" stroke-linecap="round"/>
+      <path d="M18 108 A 44 44 0 1 1 102 108" stroke="#C9A96E" stroke-width="4" fill="none" stroke-linecap="round"/>
       <!-- Lotus center petal -->
-      <path d="M60 62 C 54 74 54 88 60 96 C 66 88 66 74 60 62 Z" fill="#F0C8CE" stroke="#C9A96E" stroke-width="2.5"/>
+      <path d="M60 58 C 54 70 54 86 60 94 C 66 86 66 70 60 58 Z" fill="#F2C8CC" stroke="#C9A96E" stroke-width="2.5"/>
       <!-- Lotus left inner -->
-      <path d="M46 70 C 42 82 48 92 60 96 C 56 84 52 76 46 70 Z" fill="#F0C8CE" stroke="#C9A96E" stroke-width="2.5"/>
+      <path d="M46 66 C 41 80 47 91 60 94 C 56 82 52 74 46 66 Z" fill="#F2C8CC" stroke="#C9A96E" stroke-width="2.5"/>
       <!-- Lotus right inner -->
-      <path d="M74 70 C 78 82 72 92 60 96 C 64 84 68 76 74 70 Z" fill="#F0C8CE" stroke="#C9A96E" stroke-width="2.5"/>
+      <path d="M74 66 C 79 80 73 91 60 94 C 64 82 68 74 74 66 Z" fill="#F2C8CC" stroke="#C9A96E" stroke-width="2.5"/>
       <!-- Lotus left outer -->
-      <path d="M31 80 C 31 92 40 99 60 98 C 50 92 40 88 31 80 Z" fill="#EEB8BE" stroke="#C9A96E" stroke-width="2.5"/>
+      <path d="M30 78 C 30 91 40 98 60 96 C 48 90 38 86 30 78 Z" fill="#EAB4BA" stroke="#C9A96E" stroke-width="2.5"/>
       <!-- Lotus right outer -->
-      <path d="M89 80 C 89 92 80 99 60 98 C 70 92 80 88 89 80 Z" fill="#EEB8BE" stroke="#C9A96E" stroke-width="2.5"/>
+      <path d="M90 78 C 90 91 80 98 60 96 C 72 90 82 86 90 78 Z" fill="#EAB4BA" stroke="#C9A96E" stroke-width="2.5"/>
     </svg>
     Crystal <span>Aura</span><span class="nav-logo-text-sub"> Massage &amp; Spa</span>
   </a>
