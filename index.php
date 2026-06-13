@@ -982,19 +982,19 @@ a.f2-contact-row:hover{color:#b07c3e}
   .nav-links{display:none}
   .nav-phone{display:none}
   .hamburger{display:flex}
-  /* Mobile logo: icon + 2-line text */
-  .nav-logo{display:flex;align-items:center;gap:8px;margin-right:0;flex-shrink:1;white-space:normal}
+  /* Mobile logo: icon + 2-line text, fills available space */
+  .nav-logo{display:flex;align-items:center;gap:10px;flex:1;margin-right:12px;white-space:normal}
   .nav-lotus{display:none !important}
   .nav-logo-desktop{display:none !important}
-  .nav-brand-icon{display:block !important;width:40px !important;height:48px !important;min-width:40px;flex-shrink:0;filter:drop-shadow(0 0 5px rgba(201,169,110,0.9))}
-  .nav-logo-words{display:flex !important;flex-direction:column;line-height:1.3}
-  .nav-logo-words .line1{font-family:var(--font-serif);font-size:16px;font-weight:700;color:#fff;letter-spacing:0.3px;white-space:nowrap}
+  .nav-brand-icon{display:block !important;width:46px !important;height:54px !important;min-width:46px;flex-shrink:0;filter:drop-shadow(0 0 5px rgba(201,169,110,0.9))}
+  .nav-logo-words{display:flex !important;flex-direction:column;line-height:1.35}
+  .nav-logo-words .line1{font-family:var(--font-serif);font-size:20px;font-weight:700;color:#fff;letter-spacing:0.2px;white-space:nowrap}
   .nav-logo-words .line1 .gold{color:var(--gold)}
-  .nav-logo-words .line2{font-family:var(--font-serif);font-size:13px;font-weight:400;color:rgba(255,255,255,0.9);letter-spacing:0.3px;white-space:nowrap}
+  .nav-logo-words .line2{font-family:var(--font-serif);font-size:15px;font-weight:400;color:rgba(255,255,255,0.9);letter-spacing:0.2px;white-space:nowrap}
   #navbar.scrolled .nav-logo-words .line1{color:var(--dark)}
-  #navbar.scrolled .nav-logo-words .line2{color:var(--dark);opacity:0.7}
-  .nav-right{gap:10px;flex-shrink:0}
-  .nav-btn{padding:8px 14px;font-size:10px;white-space:nowrap;flex-shrink:0}
+  #navbar.scrolled .nav-logo-words .line2{color:var(--dark);opacity:0.75}
+  .nav-right{gap:8px;flex-shrink:0}
+  .nav-btn{padding:8px 12px;font-size:11px;white-space:nowrap;flex-shrink:0}
   /* Sections */
   #hero{height:100svh;min-height:580px}
   .hero-arrows{display:none}
