@@ -3126,10 +3126,9 @@ function bookTreatment(btn) {
   const row = btn.closest('.price-row');
   const name = row.querySelector('.price-row-name').textContent.trim();
 
-  // On mobile: open WhatsApp instantly with service name pre-filled
+  // On mobile: open booking popup instantly
   if (window.innerWidth <= 768) {
-    var msg = encodeURIComponent('Hi! I would like to book: ' + name + '. Please let me know your availability.');
-    window.open('https://wa.me/66959932861?text=' + msg, '_blank');
+    openMobPopup(name);
     return;
   }
 
@@ -3966,46 +3965,89 @@ document.addEventListener('click', function(e){
 });
 </script>
 
-<!-- MOBILE BOOK BOTTOM SHEET -->
-<div id="mob-book-sheet" style="display:none;position:fixed;inset:0;z-index:99999;touch-action:none">
-  <div id="mob-book-overlay" style="position:absolute;inset:0;background:rgba(0,0,0,0.5)" onclick="closeMobSheet()"></div>
-  <div id="mob-book-panel" style="position:absolute;bottom:0;left:0;right:0;background:#fff;border-radius:20px 20px 0 0;padding:24px 20px 36px;transform:translateY(100%);transition:transform 0.3s cubic-bezier(0.32,0.72,0,1)">
-    <div style="width:40px;height:4px;background:#e0d8d0;border-radius:2px;margin:0 auto 20px"></div>
-    <div style="font-size:11px;font-weight:700;letter-spacing:0.15em;text-transform:uppercase;color:#999;margin-bottom:6px">Book Treatment</div>
-    <div id="mob-book-service" style="font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:600;color:#1a1a1a;margin-bottom:20px;line-height:1.3"></div>
-    <a id="mob-book-wa" href="#" target="_blank" style="display:flex;align-items:center;justify-content:center;gap:10px;width:100%;padding:16px;background:#25D366;color:#fff;border-radius:12px;font-weight:700;font-size:15px;text-decoration:none;margin-bottom:12px;letter-spacing:0.02em">
-      <svg width="22" height="22" viewBox="0 0 24 24" fill="white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.122.557 4.106 1.524 5.82L.057 23.5l5.82-1.524A11.94 11.94 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.818a9.818 9.818 0 01-5.007-1.37l-.36-.214-3.713.973.99-3.62-.234-.373A9.818 9.818 0 1112 21.818z"/></svg>
-      Book via WhatsApp
-    </a>
-    <a id="mob-book-call" href="tel:+66959932861" style="display:flex;align-items:center;justify-content:center;gap:10px;width:100%;padding:16px;background:#f5f0e8;color:#1a1a1a;border-radius:12px;font-weight:700;font-size:15px;text-decoration:none;margin-bottom:12px;letter-spacing:0.02em;border:1.5px solid #e0d5c0">
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#C9A96E" stroke-width="2.5"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.09 9.81a19.79 19.79 0 01-3.07-8.68A2 2 0 012 1h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L6.09 8.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/></svg>
-      Call to Book
-    </a>
-    <button onclick="closeMobSheet();scrollToSection('booking')" style="width:100%;padding:14px;background:transparent;border:1.5px solid #ddd;border-radius:12px;font-size:14px;color:#888;cursor:pointer;font-family:inherit">Fill Booking Form</button>
+<!-- MOBILE BOOKING POPUP -->
+<div id="mob-popup" style="display:none;position:fixed;inset:0;z-index:99999;background:rgba(0,0,0,0.6);align-items:flex-end;justify-content:center">
+  <div id="mob-popup-box" style="background:#fff;width:100%;max-height:92vh;overflow-y:auto;border-radius:20px 20px 0 0;padding:20px 18px 40px;transform:translateY(100%);transition:transform 0.32s cubic-bezier(0.32,0.72,0,1)">
+    <!-- Handle bar -->
+    <div style="width:36px;height:4px;background:#ddd;border-radius:2px;margin:0 auto 18px"></div>
+    <!-- Header -->
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:18px">
+      <div>
+        <div style="font-size:10px;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:#C9A96E;margin-bottom:4px">Book Treatment</div>
+        <div id="mob-popup-service" style="font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:600;color:#1a1a1a;line-height:1.2"></div>
+      </div>
+      <button onclick="closeMobPopup()" style="width:36px;height:36px;border-radius:50%;border:none;background:#f5f0ea;font-size:20px;cursor:pointer;color:#666;display:flex;align-items:center;justify-content:center;flex-shrink:0">✕</button>
+    </div>
+    <!-- Form -->
+    <form id="mob-popup-form" onsubmit="submitMobPopup(event)">
+      <div style="margin-bottom:14px">
+        <label style="display:block;font-size:11px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:#888;margin-bottom:6px">Your Name *</label>
+        <input id="mpf-name" required type="text" placeholder="Full name" style="width:100%;padding:14px;border:1.5px solid #e0d8ce;border-radius:10px;font-size:16px;font-family:inherit;outline:none;box-sizing:border-box">
+      </div>
+      <div style="margin-bottom:14px">
+        <label style="display:block;font-size:11px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:#888;margin-bottom:6px">Phone / WhatsApp *</label>
+        <input id="mpf-phone" required type="tel" placeholder="+66 or local number" style="width:100%;padding:14px;border:1.5px solid #e0d8ce;border-radius:10px;font-size:16px;font-family:inherit;outline:none;box-sizing:border-box">
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px">
+        <div>
+          <label style="display:block;font-size:11px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:#888;margin-bottom:6px">Date</label>
+          <input id="mpf-date" type="date" style="width:100%;padding:14px;border:1.5px solid #e0d8ce;border-radius:10px;font-size:15px;font-family:inherit;outline:none;box-sizing:border-box">
+        </div>
+        <div>
+          <label style="display:block;font-size:11px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:#888;margin-bottom:6px">Time</label>
+          <input id="mpf-time" type="time" style="width:100%;padding:14px;border:1.5px solid #e0d8ce;border-radius:10px;font-size:15px;font-family:inherit;outline:none;box-sizing:border-box">
+        </div>
+      </div>
+      <div style="margin-bottom:20px">
+        <label style="display:block;font-size:11px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:#888;margin-bottom:6px">Notes (optional)</label>
+        <textarea id="mpf-notes" rows="2" placeholder="Any special requests..." style="width:100%;padding:14px;border:1.5px solid #e0d8ce;border-radius:10px;font-size:15px;font-family:inherit;outline:none;resize:none;box-sizing:border-box"></textarea>
+      </div>
+      <button type="submit" style="width:100%;padding:16px;background:linear-gradient(135deg,#C9A96E,#b8973a);color:#fff;border:none;border-radius:12px;font-size:16px;font-weight:700;letter-spacing:0.05em;cursor:pointer;font-family:inherit">Send Booking Request via WhatsApp</button>
+    </form>
   </div>
 </div>
 
 <script>
-function openMobSheet(serviceName) {
-  var sheet = document.getElementById('mob-book-sheet');
-  var panel = document.getElementById('mob-book-panel');
-  var serviceEl = document.getElementById('mob-book-service');
-  var waLink = document.getElementById('mob-book-wa');
-  serviceEl.textContent = serviceName;
-  var msg = encodeURIComponent('Hi! I would like to book: ' + serviceName + '. Please let me know your availability.');
-  waLink.href = 'https://wa.me/66959932861?text=' + msg;
-  sheet.style.display = 'block';
+function openMobPopup(serviceName) {
+  var popup = document.getElementById('mob-popup');
+  var box = document.getElementById('mob-popup-box');
+  document.getElementById('mob-popup-service').textContent = serviceName;
+  popup.style.display = 'flex';
   document.body.style.overflow = 'hidden';
-  setTimeout(function(){ panel.style.transform = 'translateY(0)'; }, 10);
+  setTimeout(function(){ box.style.transform = 'translateY(0)'; }, 10);
 }
-function closeMobSheet() {
-  var panel = document.getElementById('mob-book-panel');
-  panel.style.transform = 'translateY(100%)';
+function closeMobPopup() {
+  var box = document.getElementById('mob-popup-box');
+  box.style.transform = 'translateY(100%)';
   setTimeout(function(){
-    document.getElementById('mob-book-sheet').style.display = 'none';
+    document.getElementById('mob-popup').style.display = 'none';
     document.body.style.overflow = '';
-  }, 300);
+  }, 320);
 }
+function submitMobPopup(e) {
+  e.preventDefault();
+  var service = document.getElementById('mob-popup-service').textContent;
+  var name = document.getElementById('mpf-name').value;
+  var phone = document.getElementById('mpf-phone').value;
+  var date = document.getElementById('mpf-date').value;
+  var time = document.getElementById('mpf-time').value;
+  var notes = document.getElementById('mpf-notes').value;
+  // Save to capture.php silently
+  fetch('/capture.php', {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({name:name,phone:phone,service:service,date:date,time:time,channel:'whatsapp',notes:notes})}).catch(function(){});
+  // Build WhatsApp message
+  var msg = 'Hi Crystal Aura! I would like to book:\n\n';
+  msg += '🌸 Service: ' + service + '\n';
+  msg += '👤 Name: ' + name + '\n';
+  msg += '📱 Phone: ' + phone + '\n';
+  if (date) msg += '📅 Date: ' + date + '\n';
+  if (time) msg += '🕐 Time: ' + time + '\n';
+  if (notes) msg += '📝 Notes: ' + notes + '\n';
+  window.open('https://wa.me/66959932861?text=' + encodeURIComponent(msg), '_blank');
+  closeMobPopup();
+}
+document.getElementById('mob-popup').addEventListener('click', function(e){
+  if (e.target === this) closeMobPopup();
+});
 </script>
 </body>
 </html>
