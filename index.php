@@ -198,9 +198,12 @@ h2.section-title.white::after{background:linear-gradient(90deg,rgba(255,255,255,
 #navbar.scrolled .nav-links a{color:var(--dark)}
 #navbar.scrolled .nav-links a:hover{color:var(--gold)}
 #navbar.scrolled .nav-phone{color:var(--dark)}
-.nav-logo{font-family:var(--font-serif);font-size:19px;font-weight:500;color:#fff;letter-spacing:0.03em;margin-right:16px;white-space:nowrap;flex-shrink:0;display:inline-flex;align-items:center;gap:7px;text-decoration:none}
-.nav-lotus{flex-shrink:0;color:var(--gold);display:block;width:28px;height:23px;filter:drop-shadow(0 0 3px rgba(201,169,110,0.6))}
-.nav-logo span{color:var(--gold)}
+.nav-logo{font-family:var(--font-serif);font-size:19px;font-weight:500;color:#fff;letter-spacing:0.03em;margin-right:16px;white-space:nowrap;flex-shrink:0;display:inline-flex;align-items:center;gap:7px;text-decoration:none;transition:transform 0.3s ease,filter 0.3s ease}
+.nav-logo:hover{transform:translateY(-1px);filter:drop-shadow(0 4px 12px rgba(201,169,110,0.5))}
+.nav-lotus{flex-shrink:0;color:var(--gold);display:block;width:28px;height:23px;filter:drop-shadow(0 0 4px rgba(201,169,110,0.7));animation:lotusGlow 2.5s ease-in-out infinite}
+@keyframes lotusGlow{0%,100%{filter:drop-shadow(0 0 4px rgba(201,169,110,0.7))}50%{filter:drop-shadow(0 0 10px rgba(201,169,110,1)) drop-shadow(0 0 18px rgba(201,169,110,0.5))}}
+.nav-logo span{color:var(--gold);animation:goldShimmer 3s ease-in-out infinite}
+@keyframes goldShimmer{0%,100%{color:#C9A96E}50%{color:#e8c87a;text-shadow:0 0 8px rgba(201,169,110,0.8)}}
 /* Mobile brand logo icon - hidden, using nav-lotus instead */
 .nav-brand-icon{display:none}
 .nav-logo-words{display:none}
