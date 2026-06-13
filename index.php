@@ -975,7 +975,7 @@ a.f2-contact-row:hover{color:#b07c3e}
   .nav-links{display:none}
   .nav-phone{display:none}
   .hamburger{display:flex}
-  .nav-logo{font-size:16px;white-space:nowrap;flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis}
+  .nav-logo{font-size:13px;white-space:nowrap;flex-shrink:1}
   .nav-right{gap:10px;flex-shrink:0}
   .nav-btn{padding:8px 14px;font-size:10px;white-space:nowrap;flex-shrink:0}
   /* Sections */
