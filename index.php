@@ -3126,6 +3126,12 @@ function bookTreatment(btn) {
   const row = btn.closest('.price-row');
   const name = row.querySelector('.price-row-name').textContent.trim();
 
+  // On mobile: open instant bottom sheet instead of slow scroll
+  if (window.innerWidth <= 768) {
+    openMobSheet(name);
+    return;
+  }
+
   // Auto-select matching option in booking form
   const sel = document.getElementById('f-service');
   let matched = false;
@@ -3957,6 +3963,48 @@ document.addEventListener('click', function(e){
   var b = cell.querySelector('.price-book-btn');
   if (b) b.click();
 });
+</script>
+
+<!-- MOBILE BOOK BOTTOM SHEET -->
+<div id="mob-book-sheet" style="display:none;position:fixed;inset:0;z-index:99999;touch-action:none">
+  <div id="mob-book-overlay" style="position:absolute;inset:0;background:rgba(0,0,0,0.5)" onclick="closeMobSheet()"></div>
+  <div id="mob-book-panel" style="position:absolute;bottom:0;left:0;right:0;background:#fff;border-radius:20px 20px 0 0;padding:24px 20px 36px;transform:translateY(100%);transition:transform 0.3s cubic-bezier(0.32,0.72,0,1)">
+    <div style="width:40px;height:4px;background:#e0d8d0;border-radius:2px;margin:0 auto 20px"></div>
+    <div style="font-size:11px;font-weight:700;letter-spacing:0.15em;text-transform:uppercase;color:#999;margin-bottom:6px">Book Treatment</div>
+    <div id="mob-book-service" style="font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:600;color:#1a1a1a;margin-bottom:20px;line-height:1.3"></div>
+    <a id="mob-book-wa" href="#" target="_blank" style="display:flex;align-items:center;justify-content:center;gap:10px;width:100%;padding:16px;background:#25D366;color:#fff;border-radius:12px;font-weight:700;font-size:15px;text-decoration:none;margin-bottom:12px;letter-spacing:0.02em">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.122.557 4.106 1.524 5.82L.057 23.5l5.82-1.524A11.94 11.94 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.818a9.818 9.818 0 01-5.007-1.37l-.36-.214-3.713.973.99-3.62-.234-.373A9.818 9.818 0 1112 21.818z"/></svg>
+      Book via WhatsApp
+    </a>
+    <a id="mob-book-call" href="tel:+66959932861" style="display:flex;align-items:center;justify-content:center;gap:10px;width:100%;padding:16px;background:#f5f0e8;color:#1a1a1a;border-radius:12px;font-weight:700;font-size:15px;text-decoration:none;margin-bottom:12px;letter-spacing:0.02em;border:1.5px solid #e0d5c0">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#C9A96E" stroke-width="2.5"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.09 9.81a19.79 19.79 0 01-3.07-8.68A2 2 0 012 1h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L6.09 8.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/></svg>
+      Call to Book
+    </a>
+    <button onclick="closeMobSheet();scrollToSection('booking')" style="width:100%;padding:14px;background:transparent;border:1.5px solid #ddd;border-radius:12px;font-size:14px;color:#888;cursor:pointer;font-family:inherit">Fill Booking Form</button>
+  </div>
+</div>
+
+<script>
+function openMobSheet(serviceName) {
+  var sheet = document.getElementById('mob-book-sheet');
+  var panel = document.getElementById('mob-book-panel');
+  var serviceEl = document.getElementById('mob-book-service');
+  var waLink = document.getElementById('mob-book-wa');
+  serviceEl.textContent = serviceName;
+  var msg = encodeURIComponent('Hi! I would like to book: ' + serviceName + '. Please let me know your availability.');
+  waLink.href = 'https://wa.me/66959932861?text=' + msg;
+  sheet.style.display = 'block';
+  document.body.style.overflow = 'hidden';
+  setTimeout(function(){ panel.style.transform = 'translateY(0)'; }, 10);
+}
+function closeMobSheet() {
+  var panel = document.getElementById('mob-book-panel');
+  panel.style.transform = 'translateY(100%)';
+  setTimeout(function(){
+    document.getElementById('mob-book-sheet').style.display = 'none';
+    document.body.style.overflow = '';
+  }, 300);
+}
 </script>
 </body>
 </html>
