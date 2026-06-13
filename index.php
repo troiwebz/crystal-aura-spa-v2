@@ -1,4 +1,6 @@
 <?php
+header('Cache-Control: no-store, no-cache, must-revalidate');
+header('Pragma: no-cache');
 $S = json_decode(file_get_contents(__DIR__ . '/data/settings.json'), true);
 $seo = $S['seo']; $biz = $S['business'];
 $schema = $S['schema'] ?? []; $perf = $S['performance'] ?? []; $tech = $S['technical'] ?? [];
@@ -1169,6 +1171,23 @@ a.f2-contact-row:hover{color:#b07c3e}
 </style>
 </head>
 <body>
+<script>
+// Force white navbar on mobile immediately before paint
+if(window.innerWidth <= 768){
+  document.addEventListener('DOMContentLoaded',function(){
+    var nb=document.getElementById('navbar');
+    if(nb){nb.style.background='#fff';nb.style.boxShadow='0 2px 12px rgba(0,0,0,0.1)';}
+    var logo=document.querySelector('.nav-logo');
+    if(logo){logo.style.color='#1a1a1a';logo.style.fontWeight='800';}
+    var aura=document.querySelector('.nav-logo span');
+    if(aura){aura.style.color='#b8860b';}
+    var lotus=document.querySelector('.nav-lotus');
+    if(lotus){lotus.style.color='#b8860b';}
+    var bars=document.querySelectorAll('.hamburger span');
+    bars.forEach(function(b){b.style.background='#1a1a1a';});
+  });
+}
+</script>
 
 <!-- NAVBAR -->
 <nav id="navbar">
