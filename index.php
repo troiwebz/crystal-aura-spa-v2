@@ -202,6 +202,10 @@ h2.section-title.white::after{background:linear-gradient(90deg,rgba(255,255,255,
 .nav-lotus{flex-shrink:0;color:var(--gold);display:block;width:28px;height:23px;filter:drop-shadow(0 0 3px rgba(201,169,110,0.6))}
 .nav-logo span{color:var(--gold)}
 .nav-logo-text-sub{font-size:0.65em;opacity:0.85}
+/* Desktop: show inline text, hide 2-line words block */
+.nav-logo-words{display:none}
+.nav-logo-desktop{color:inherit}
+.nav-logo-desktop span{color:var(--gold)}
 /* Mobile brand logo icon - matches actual brand logo */
 .nav-brand-icon{display:none}
 .nav-links{display:flex;gap:18px;flex:1;justify-content:center}
@@ -978,11 +982,16 @@ a.f2-contact-row:hover{color:#b07c3e}
   .nav-links{display:none}
   .nav-phone{display:none}
   .hamburger{display:flex}
-  /* Mobile logo: show brand icon only, big and clear */
-  .nav-logo{display:flex;align-items:center;gap:0;margin-right:0;flex-shrink:0;font-size:0;line-height:0}
-  .nav-logo > *:not(.nav-brand-icon){display:none !important}
+  /* Mobile logo: icon + 2-line text */
+  .nav-logo{display:flex;align-items:center;gap:8px;margin-right:0;flex-shrink:1;font-size:0;line-height:0;white-space:normal}
   .nav-lotus{display:none !important}
-  .nav-brand-icon{display:block !important;width:72px !important;height:86px !important;min-width:72px;filter:drop-shadow(0 0 6px rgba(201,169,110,0.9))}
+  .nav-brand-icon{display:block !important;width:44px !important;height:52px !important;min-width:44px;flex-shrink:0;filter:drop-shadow(0 0 5px rgba(201,169,110,0.9))}
+  .nav-logo-words{display:flex !important;flex-direction:column;line-height:1.2}
+  .nav-logo-words .line1{font-family:var(--font-serif);font-size:13px;font-weight:600;color:#fff;letter-spacing:0.5px}
+  .nav-logo-words .line1 span{color:var(--gold)}
+  .nav-logo-words .line2{font-family:var(--font-serif);font-size:10px;font-weight:400;color:rgba(255,255,255,0.82);letter-spacing:0.8px;text-transform:uppercase}
+  #navbar.scrolled .nav-logo-words .line1{color:var(--dark)}
+  #navbar.scrolled .nav-logo-words .line2{color:var(--dark);opacity:0.7}
   .nav-right{gap:10px;flex-shrink:0}
   .nav-btn{padding:8px 14px;font-size:10px;white-space:nowrap;flex-shrink:0}
   /* Sections */
@@ -1204,7 +1213,12 @@ a.f2-contact-row:hover{color:#b07c3e}
       <!-- Lotus right outer -->
       <path d="M90 78 C 90 91 80 98 60 96 C 72 90 82 86 90 78 Z" fill="#EAB4BA" stroke="#C9A96E" stroke-width="2.5"/>
     </svg>
-    Crystal <span>Aura</span><span class="nav-logo-text-sub"> Massage &amp; Spa</span>
+    <span class="nav-logo-words" style="display:none">
+      <span class="line1">Crystal <span>Aura</span></span>
+      <span class="line2">Massage &amp; Spa</span>
+    </span>
+    <!-- Desktop text (hidden on mobile via .nav-logo-words override) -->
+    <span class="nav-logo-desktop">Crystal <span>Aura</span> Massage &amp; Spa</span>
   </a>
   <ul class="nav-links">
     <li><a href="#pricing">Services</a></li>
