@@ -974,21 +974,21 @@ a.f2-contact-row:hover{color:#b07c3e}
   .pkg-duration-unit{font-size:9px !important}
 }
 @media(max-width:768px){
-  /* Mobile navbar: compact, cream, row layout */
-  #navbar{background:#f0ece4 !important;box-shadow:0 2px 8px rgba(0,0,0,0.08);padding:6px 14px;flex-direction:row;align-items:center;justify-content:center;gap:12px;position:relative}
+  /* Mobile navbar: cream, logo centered, hamburger right */
+  #navbar{background:#f0ece4 !important;box-shadow:0 2px 8px rgba(0,0,0,0.08);padding:8px 16px;flex-direction:row;align-items:center;justify-content:space-between;position:relative}
   .nav-links{display:none}
   .nav-phone{display:none}
   .nav-right{position:static;gap:0;flex-shrink:0}
   .hamburger{display:flex}
   #navbar .hamburger span{background:#2c2418}
   #navbar .btn-gold{display:none !important}
-  /* Logo: stacked, compact */
-  .nav-logo{flex-direction:column;align-items:center;text-align:center;gap:2px;flex:none;margin-right:0;font-size:0;color:#2c2418 !important}
-  .nav-lotus{width:46px !important;height:52px !important;flex-shrink:0}
-  .nav-logo .mob-text{display:flex;flex-direction:column;align-items:center;line-height:1.2}
-  .nav-logo .mob-line1{font-family:var(--font-serif);font-size:15px;font-weight:400;color:#2c2418;white-space:nowrap;letter-spacing:0.02em}
+  /* Logo: stacked, centered, bigger */
+  .nav-logo{flex-direction:column;align-items:center;text-align:center;gap:3px;flex:1;margin-right:0;font-size:0;color:#2c2418 !important}
+  .nav-lotus{width:58px !important;height:66px !important;flex-shrink:0}
+  .nav-logo .mob-text{display:flex;flex-direction:column;align-items:center;line-height:1.25}
+  .nav-logo .mob-line1{font-family:var(--font-serif);font-size:17px;font-weight:400;color:#2c2418;white-space:nowrap;letter-spacing:0.02em}
   .nav-logo .mob-line1 span{color:#b8973a}
-  .nav-logo .mob-line2{font-family:var(--font-serif);font-size:15px;font-weight:400;color:#2c2418;white-space:nowrap;letter-spacing:0.02em}
+  .nav-logo .mob-line2{font-family:var(--font-serif);font-size:17px;font-weight:400;color:#2c2418;white-space:nowrap;letter-spacing:0.02em}
   .nav-logo .mob-hide{display:none}
   /* Sections */
   #hero{height:100svh;min-height:580px}
