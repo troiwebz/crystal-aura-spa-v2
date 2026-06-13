@@ -979,9 +979,14 @@ a.f2-contact-row:hover{color:#b07c3e}
   .nav-links{display:none}
   .nav-phone{display:none}
   .hamburger{display:flex}
+  /* Mobile: white navbar always */
+  #navbar{background:#fff !important;box-shadow:0 2px 12px rgba(0,0,0,0.1);padding:10px 16px}
+  #navbar .nav-logo{color:var(--dark)}
+  #navbar .nav-logo span{color:var(--gold)}
+  #navbar .hamburger span{background:var(--dark)}
   /* Mobile logo */
   .nav-logo{flex:1;font-size:15px;line-height:1.35;white-space:normal;margin-right:10px;align-items:center;gap:8px}
-  .nav-lotus{width:30px;height:25px;flex-shrink:0}
+  .nav-lotus{width:30px;height:25px;flex-shrink:0;color:var(--gold)}
   .nav-right{gap:8px;flex-shrink:0}
   .nav-btn{padding:8px 12px;font-size:11px;white-space:nowrap;flex-shrink:0}
   /* Sections */
