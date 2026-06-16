@@ -584,7 +584,7 @@ h2.section-title.white::after{background:linear-gradient(90deg,rgba(255,255,255,
 
 /* Excel-Style Table */
 .accordion-content-pricing{width:100%;display:table;border-collapse:collapse;border:1.5px solid rgba(201,169,110,0.2);border-radius:8px;overflow:hidden;box-shadow:0 2px 12px rgba(0,0,0,0.06)}
-.price-row{display:table-row;border-bottom:1px solid rgba(201,169,110,0.15)}
+.price-row{display:table-row;border-bottom:1px solid rgba(201,169,110,0.15);touch-action:manipulation}
 .price-row:last-child{border-bottom:none}
 .price-row:nth-child(even){background:#f9f6f0}
 .price-row:nth-child(odd){background:#fff}
@@ -594,7 +594,7 @@ h2.section-title.white::after{background:linear-gradient(90deg,rgba(255,255,255,
 .price-col{text-align:center;font-family:var(--font-serif);font-size:16px;font-weight:600;color:var(--gold);width:16%}
 .price-col-label{display:block;font-family:var(--font-sans);font-size:10px;font-weight:700;color:var(--text-light);letter-spacing:0.08em;text-transform:uppercase;margin-bottom:3px}
 .price-col-value::before{content:'฿';font-size:14px;margin-right:2px}
-.price-book-col{text-align:center;width:20%;padding:12px 16px}
+.price-book-col{text-align:center;width:20%;padding:12px 16px;touch-action:manipulation}
 .price-book-btn{display:inline-block;padding:8px 18px;font-family:var(--font-sans);font-size:11px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;background:transparent;border:1.5px solid rgba(201,169,110,0.45);color:var(--gold);cursor:pointer;border-radius:4px;transition:all 0.25s ease;white-space:nowrap}
 .price-book-btn:hover{background:var(--gold);color:#fff;border-color:var(--gold);box-shadow:0 4px 14px rgba(201,169,110,0.35);transform:translateY(-1px)}
 
@@ -604,9 +604,7 @@ h2.section-title.white::after{background:linear-gradient(90deg,rgba(255,255,255,
 .accordion-content .price-table{display:none !important}
 
 @media(max-width:768px){
-  /* Expand Book button tap area invisibly — small visual button, finger-sized target */
-  .price-book-btn{position:relative}
-  .price-book-btn::after{content:'';position:absolute;top:-14px;bottom:-14px;left:-10px;right:-10px}
+  .price-book-btn::after{display:none}
   .pricing-tabs-nav{gap:4px}
   .pricing-tab-btn{padding:10px 14px;font-size:11px}
   .price-row-name{padding:10px 10px;font-size:13px;width:28%}
@@ -624,7 +622,7 @@ h2.section-title.white::after{background:linear-gradient(90deg,rgba(255,255,255,
   .price-col-value{color:var(--gold);font-weight:700;font-size:12px}
   .price-col-value::before{content:'฿';font-size:10px;margin-right:1px}
   .price-book-col{padding:6px 4px;width:21%}
-  .price-book-btn{padding:0;font-size:10px;letter-spacing:0.04em;border-radius:6px;min-height:44px;width:100%;display:flex;align-items:center;justify-content:center;line-height:1.2;touch-action:manipulation}
+  .price-book-btn{padding:0;font-size:10px;letter-spacing:0.04em;border-radius:6px;min-height:44px;width:100%;display:flex;align-items:center;justify-content:center;line-height:1.2;touch-action:manipulation;-webkit-tap-highlight-color:transparent;text-decoration:none}
 }
 /* Mobile price cards — shown only on mobile via JS class */
 .price-card-list{display:none}
@@ -1232,7 +1230,7 @@ if(window.innerWidth <= 768){
   </ul>
   <div class="nav-right">
     <span class="nav-phone">095 993 2861</span>
-    <a href="#booking" class="btn btn-gold" style="font-size:11px;padding:10px 22px">Book Now</a>
+    <a href="/book" class="btn btn-gold" style="font-size:11px;padding:10px 22px">Book Now</a>
     <div class="hamburger" id="hamburger">
       <span></span><span></span><span></span>
     </div>
@@ -1247,7 +1245,7 @@ if(window.innerWidth <= 768){
   <a href="#signature" class="mobile-link">Our Signature Treatments</a>
   <a href="#gallery" class="mobile-link">Gallery</a>
   <a href="#testimonials" class="mobile-link">Reviews</a>
-  <a href="#booking" class="mobile-link">Book Now</a>
+  <a href="/book" class="mobile-link">Book Now</a>
   <a href="#contact" class="mobile-link">Contact</a>
 </div>
 
@@ -1268,7 +1266,7 @@ if(window.innerWidth <= 768){
       <h1 style="font-family:'Cormorant Garamond',serif;font-size:clamp(3rem,7vw,5.5rem);font-weight:300;color:#fff;line-height:1.1;margin:0 0 20px;text-shadow:0 2px 30px rgba(0,0,0,0.8);">Discover Your <em style="color:#c9a96e;font-style:italic;"><span id="ht1">Inner Peace</span><span class="hero-type-cursor">|</span></em></h1>
       <p style="font-family:'Lato',sans-serif;font-size:1.05rem;color:rgba(255,255,255,0.85);max-width:520px;margin:0 auto 36px;line-height:1.8;text-shadow:0 1px 12px rgba(0,0,0,0.9);">Experience authentic Thailand wellness traditions combined with modern spa techniques.</p>
       <div style="display:flex;gap:16px;justify-content:center;flex-wrap:wrap;align-items:center;">
-        <a href="#booking" style="background:#c9a96e;color:#fff;padding:14px 36px;font-family:'Lato',sans-serif;font-size:13px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;text-decoration:none;cursor:pointer;">Book Now</a>
+        <a href="/book" style="background:#c9a96e;color:#fff;padding:14px 36px;font-family:'Lato',sans-serif;font-size:13px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;text-decoration:none;cursor:pointer;">Book Now</a>
         <a href="#pricing" style="background:transparent;color:#fff;padding:14px 36px;font-family:'Lato',sans-serif;font-size:13px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;text-decoration:none;border:1px solid rgba(255,255,255,0.7);cursor:pointer;">View Services</a>
       </div>
     </div>
@@ -1299,7 +1297,7 @@ if(window.innerWidth <= 768){
       <h2 class="slide-h">A Sanctuary of <em><span id="ht3">Tranquility</span><span class="slide-1-type-cursor">|</span></em></h2>
       <p>Nestled in the heart of Nimman, Chiang Mai — your escape from the everyday.</p>
       <div class="slide-btns">
-        <a href="#booking" class="btn btn-gold">Book Now</a>
+        <a href="/book" class="btn btn-gold">Book Now</a>
         <a href="#pricing" class="btn btn-outline-white">View Services</a>
       </div>
     </div>
@@ -1354,7 +1352,7 @@ if(window.innerWidth <= 768){
           <span class="service-duration">60 / 90 / 120 min</span>
           <span class="service-price">From 400 THB</span>
         </div>
-        <button class="service-book-btn" onclick="addToCart('Traditional Thai Massage', this)">Book This →</button>
+        <a class="service-book-btn" href="/book?service=Traditional+Thai+Massage">Book This →</a>
       </div>
     </div>
 
@@ -1377,7 +1375,7 @@ if(window.innerWidth <= 768){
           <span class="service-duration">60 / 90 / 120 min</span>
           <span class="service-price">From 790 THB</span>
         </div>
-        <button class="service-book-btn" onclick="addToCart('Aromatherapy Massage', this)">Book This →</button>
+        <a class="service-book-btn" href="/book?service=Aromatherapy+Massage">Book This →</a>
       </div>
     </div>
 
@@ -1398,7 +1396,7 @@ if(window.innerWidth <= 768){
           <span class="service-duration">60 / 90 min</span>
           <span class="service-price">From 900 THB</span>
         </div>
-        <button class="service-book-btn" onclick="addToCart('Body Scrub', this)">Book This →</button>
+        <a class="service-book-btn" href="/book?service=Body+Scrub">Book This →</a>
       </div>
     </div>
 
@@ -1419,7 +1417,7 @@ if(window.innerWidth <= 768){
           <span class="service-duration">60 / 90 / 120 min</span>
           <span class="service-price">From 790 THB</span>
         </div>
-        <button class="service-book-btn" onclick="addToCart('Anti Aging Facial', this)">Book This →</button>
+        <a class="service-book-btn" href="/book?service=Anti+Aging+Facial">Book This →</a>
       </div>
     </div>
 
@@ -1439,7 +1437,7 @@ if(window.innerWidth <= 768){
           <span class="service-duration">90 / 120 min</span>
           <span class="service-price">From 1,500 THB</span>
         </div>
-        <button class="service-book-btn" onclick="addToCart('Hot Stone Massage', this)">Book This →</button>
+        <a class="service-book-btn" href="/book?service=Hot+Stone+Massage">Book This →</a>
       </div>
     </div>
 
@@ -1459,7 +1457,7 @@ if(window.innerWidth <= 768){
           <span class="service-duration">60 / 90 / 120 min</span>
           <span class="service-price">From 990 THB</span>
         </div>
-        <button class="service-book-btn" onclick="addToCart('Deep Tissue Massage', this)">Book This →</button>
+        <a class="service-book-btn" href="/book?service=Deep+Tissue+Massage">Book This →</a>
       </div>
     </div>
 
@@ -1487,7 +1485,7 @@ if(window.innerWidth <= 768){
           <span class="sale">20% Off</span>
         </div>
       </div>
-      <a href="#booking" class="btn btn-gold" style="width:100%;text-align:center;display:block;margin-top:20px;">Claim Offer →</a>
+      <a href="/book" class="btn btn-gold" style="width:100%;text-align:center;display:block;margin-top:20px;">Claim Offer →</a>
     </div>
     <!-- Card 2 -->
     <div class="offer-card fade-up" style="transition-delay:0.1s">
@@ -1502,7 +1500,7 @@ if(window.innerWidth <= 768){
           <span class="sale">2,200 THB</span>
         </div>
       </div>
-      <a href="#booking" class="btn btn-gold" style="width:100%;text-align:center;display:block;margin-top:20px;">Book for Two →</a>
+      <a href="/book" class="btn btn-gold" style="width:100%;text-align:center;display:block;margin-top:20px;">Book for Two →</a>
     </div>
     <!-- Card 3 -->
     <div class="offer-card fade-up" style="transition-delay:0.2s">
@@ -1523,7 +1521,7 @@ if(window.innerWidth <= 768){
         <div class="countdown-unit"><span class="countdown-num" id="cd-mins">0</span><span class="countdown-label">Mins</span></div>
         <div class="countdown-unit"><span class="countdown-num" id="cd-secs">0</span><span class="countdown-label">Secs</span></div>
       </div>
-      <a href="#booking" class="btn btn-gold" style="width:100%;text-align:center;display:block;margin-top:14px;">Book Weekday →</a>
+      <a href="/book" class="btn btn-gold" style="width:100%;text-align:center;display:block;margin-top:14px;">Book Weekday →</a>
     </div>
   </div>
 </section>
@@ -1765,7 +1763,7 @@ if(window.innerWidth <= 768){
   </div>
 
   <div class="sig-book-wrap fade-up">
-    <a href="#booking" class="hero-offer-btn">Book a Signature Treatment →</a>
+    <a href="/book" class="hero-offer-btn">Book a Signature Treatment →</a>
   </div>
 </section>
 
@@ -1785,7 +1783,7 @@ if(window.innerWidth <= 768){
         <li>Couples & Group Bookings Welcome</li>
         <li>Open Daily 09:00 AM – 11:30 PM</li>
       </ul>
-      <a href="#booking" class="btn btn-gold" style="margin-top:28px">Reserve Your Treatment</a>
+      <a href="/book" class="btn btn-gold" style="margin-top:28px">Reserve Your Treatment</a>
     </div>
     <div class="about-img" style="position:relative;border-radius:4px;overflow:hidden;">
       <video autoplay muted loop playsinline style="width:100%;height:100%;object-fit:cover;display:block;min-height:460px;">
@@ -1842,31 +1840,31 @@ if(window.innerWidth <= 768){
           <div class="price-col"><span class="price-col-label">60 min</span><span class="price-col-value">400</span></div>
           <div class="price-col"><span class="price-col-label">90 min</span><span class="price-col-value">590</span></div>
           <div class="price-col"><span class="price-col-label">120 min</span><span class="price-col-value">780</span></div>
-        <div class="price-book-col"><button class="price-book-btn" onclick="bookTreatment(this)">Book &#x2192;</button></div></div>
+        <div class="price-book-col"><a class="price-book-btn" href="/book">Book &#x2192;</a></div></div>
         <div class="price-row">
           <div class="price-row-name">Foot Scrub + Foot Reflexology</div>
           <div class="price-col"><span class="price-col-label">60 min</span><span class="price-col-value">690</span></div>
           <div class="price-col"><span class="price-col-label">90 min</span><span class="price-col-value">1000</span></div>
           <div class="price-col"><span class="price-col-label">120 min</span><span class="price-col-value">1100</span></div>
-        <div class="price-book-col"><button class="price-book-btn" onclick="bookTreatment(this)">Book &#x2192;</button></div></div>
+        <div class="price-book-col"><a class="price-book-btn" href="/book">Book &#x2192;</a></div></div>
         <div class="price-row">
           <div class="price-row-name">Foot Massage + Herbal Ball Hot Compress</div>
           <div class="price-col"><span class="price-col-label">60 min</span><span class="price-col-value">650</span></div>
           <div class="price-col"><span class="price-col-label">90 min</span><span class="price-col-value">950</span></div>
           <div class="price-col"><span class="price-col-label">120 min</span><span class="price-col-value">1200</span></div>
-        <div class="price-book-col"><button class="price-book-btn" onclick="bookTreatment(this)">Book &#x2192;</button></div></div>
+        <div class="price-book-col"><a class="price-book-btn" href="/book">Book &#x2192;</a></div></div>
         <div class="price-row">
           <div class="price-row-name">Foot, Back, Neck & Shoulder</div>
           <div class="price-col"><span class="price-col-label">60 min</span><span class="price-col-value">550</span></div>
           <div class="price-col"><span class="price-col-label">90 min</span><span class="price-col-value">800</span></div>
           <div class="price-col"><span class="price-col-label">120 min</span><span class="price-col-value">1050</span></div>
-        <div class="price-book-col"><button class="price-book-btn" onclick="bookTreatment(this)">Book &#x2192;</button></div></div>
+        <div class="price-book-col"><a class="price-book-btn" href="/book">Book &#x2192;</a></div></div>
         <div class="price-row">
           <div class="price-row-name">Rose Quartz Foot Massage</div>
           <div class="price-col"><span class="price-col-label">60 min</span><span class="price-col-value">490</span></div>
           <div class="price-col"><span class="price-col-label">90 min</span><span class="price-col-value">690</span></div>
           <div class="price-col"><span class="price-col-label">120 min</span><span class="price-col-value">900</span></div>
-        <div class="price-book-col"><button class="price-book-btn" onclick="bookTreatment(this)">Book &#x2192;</button></div></div>
+        <div class="price-book-col"><a class="price-book-btn" href="/book">Book &#x2192;</a></div></div>
       </div>
     </div>
 
@@ -1879,37 +1877,37 @@ if(window.innerWidth <= 768){
           <div class="price-col"><span class="price-col-label">60 min</span><span class="price-col-value">400</span></div>
           <div class="price-col"><span class="price-col-label">90 min</span><span class="price-col-value">590</span></div>
           <div class="price-col"><span class="price-col-label">120 min</span><span class="price-col-value">780</span></div>
-        <div class="price-book-col"><button class="price-book-btn" onclick="bookTreatment(this)">Book &#x2192;</button></div></div>
+        <div class="price-book-col"><a class="price-book-btn" href="/book">Book &#x2192;</a></div></div>
         <div class="price-row">
           <div class="price-row-name">4-Hands Thai Massage</div>
           <div class="price-col"><span class="price-col-label">60 min</span><span class="price-col-value">1200</span></div>
           <div class="price-col"><span class="price-col-label">90 min</span><span class="price-col-value">1750</span></div>
           <div class="price-col"><span class="price-col-label">120 min</span><span style="font-size:18px;color:var(--text-light)">—</span></div>
-        <div class="price-book-col"><button class="price-book-btn" onclick="bookTreatment(this)">Book &#x2192;</button></div></div>
+        <div class="price-book-col"><a class="price-book-btn" href="/book">Book &#x2192;</a></div></div>
         <div class="price-row">
           <div class="price-row-name">Neck, Back & Shoulder Massage</div>
           <div class="price-col"><span class="price-col-label">60 min</span><span class="price-col-value">650</span></div>
           <div class="price-col"><span class="price-col-label">90 min</span><span class="price-col-value">950</span></div>
           <div class="price-col"><span class="price-col-label">120 min</span><span class="price-col-value">1200</span></div>
-        <div class="price-book-col"><button class="price-book-btn" onclick="bookTreatment(this)">Book &#x2192;</button></div></div>
+        <div class="price-book-col"><a class="price-book-btn" href="/book">Book &#x2192;</a></div></div>
         <div class="price-row">
           <div class="price-row-name">Thai Balm Massage</div>
           <div class="price-col"><span class="price-col-label">60 min</span><span class="price-col-value">650</span></div>
           <div class="price-col"><span class="price-col-label">90 min</span><span class="price-col-value">950</span></div>
           <div class="price-col"><span class="price-col-label">120 min</span><span class="price-col-value">1200</span></div>
-        <div class="price-book-col"><button class="price-book-btn" onclick="bookTreatment(this)">Book &#x2192;</button></div></div>
+        <div class="price-book-col"><a class="price-book-btn" href="/book">Book &#x2192;</a></div></div>
         <div class="price-row">
           <div class="price-row-name">Thai Massage + Herbal Ball Compress</div>
           <div class="price-col"><span class="price-col-label">60 min</span><span class="price-col-value">890</span></div>
           <div class="price-col"><span class="price-col-label">90 min</span><span class="price-col-value">1300</span></div>
           <div class="price-col"><span class="price-col-label">120 min</span><span class="price-col-value">1650</span></div>
-        <div class="price-book-col"><button class="price-book-btn" onclick="bookTreatment(this)">Book &#x2192;</button></div></div>
+        <div class="price-book-col"><a class="price-book-btn" href="/book">Book &#x2192;</a></div></div>
         <div class="price-row">
           <div class="price-row-name">Thai Massage with Bamboo</div>
           <div class="price-col"><span class="price-col-label">60 min</span><span class="price-col-value">790</span></div>
           <div class="price-col"><span class="price-col-label">90 min</span><span class="price-col-value">1150</span></div>
           <div class="price-col"><span class="price-col-label">120 min</span><span class="price-col-value">1400</span></div>
-        <div class="price-book-col"><button class="price-book-btn" onclick="bookTreatment(this)">Book &#x2192;</button></div></div>
+        <div class="price-book-col"><a class="price-book-btn" href="/book">Book &#x2192;</a></div></div>
       </div>
     </div>
 
@@ -1917,21 +1915,21 @@ if(window.innerWidth <= 768){
     <div class="pricing-tab-content" id="tab-oil">
       <p style="font-size:14px;color:var(--text-light);margin-bottom:24px;font-style:italic">Relax and recharge with an Aromatherapy Oil Massage. Essential oils and soothing massage techniques relieve stress, ease muscle tension, and restore balance.</p>
       <div class="accordion-content-pricing">
-        <div class="price-row"><div class="price-row-name">4-Hands Aroma Massage</div><div class="price-col"><span class="price-col-label">60 min</span><span class="price-col-value">1600</span></div><div class="price-col"><span class="price-col-label">90 min</span><span class="price-col-value">2300</span></div><div class="price-col"><span class="price-col-label">120 min</span><span style="font-size:18px;color:var(--text-light)">—</span></div><div class="price-book-col"><button class="price-book-btn" onclick="bookTreatment(this)">Book &#x2192;</button></div></div>
-        <div class="price-row"><div class="price-row-name">Oil Massage</div><div class="price-col"><span class="price-col-label">60 min</span><span class="price-col-value">690</span></div><div class="price-col"><span class="price-col-label">90 min</span><span class="price-col-value">1000</span></div><div class="price-col"><span class="price-col-label">120 min</span><span class="price-col-value">1300</span></div><div class="price-book-col"><button class="price-book-btn" onclick="bookTreatment(this)">Book &#x2192;</button></div></div>
-        <div class="price-row"><div class="price-row-name">Aromatherapy Massage</div><div class="price-col"><span class="price-col-label">60 min</span><span class="price-col-value">790</span></div><div class="price-col"><span class="price-col-label">90 min</span><span class="price-col-value">1150</span></div><div class="price-col"><span class="price-col-label">120 min</span><span class="price-col-value">1400</span></div><div class="price-book-col"><button class="price-book-btn" onclick="bookTreatment(this)">Book &#x2192;</button></div></div>
-        <div class="price-row"><div class="price-row-name">Aloe Vera Gel / Body Lotion Massage</div><div class="price-col"><span class="price-col-label">60 min</span><span class="price-col-value">790</span></div><div class="price-col"><span class="price-col-label">90 min</span><span class="price-col-value">1150</span></div><div class="price-col"><span class="price-col-label">120 min</span><span class="price-col-value">1400</span></div><div class="price-book-col"><button class="price-book-btn" onclick="bookTreatment(this)">Book &#x2192;</button></div></div>
-        <div class="price-row"><div class="price-row-name">Hot Aromatherapy Massage</div><div class="price-col"><span class="price-col-label">60 min</span><span class="price-col-value">990</span></div><div class="price-col"><span class="price-col-label">90 min</span><span class="price-col-value">1450</span></div><div class="price-col"><span class="price-col-label">120 min</span><span class="price-col-value">1800</span></div><div class="price-book-col"><button class="price-book-btn" onclick="bookTreatment(this)">Book &#x2192;</button></div></div>
-        <div class="price-row"><div class="price-row-name">Sports Massage</div><div class="price-col"><span class="price-col-label">60 min</span><span class="price-col-value">990</span></div><div class="price-col"><span class="price-col-label">90 min</span><span class="price-col-value">1450</span></div><div class="price-col"><span class="price-col-label">120 min</span><span class="price-col-value">1800</span></div><div class="price-book-col"><button class="price-book-btn" onclick="bookTreatment(this)">Book &#x2192;</button></div></div>
-        <div class="price-row"><div class="price-row-name">Deep Tissue Massage</div><div class="price-col"><span class="price-col-label">60 min</span><span class="price-col-value">990</span></div><div class="price-col"><span class="price-col-label">90 min</span><span class="price-col-value">1450</span></div><div class="price-col"><span class="price-col-label">120 min</span><span class="price-col-value">1800</span></div><div class="price-book-col"><button class="price-book-btn" onclick="bookTreatment(this)">Book &#x2192;</button></div></div>
-        <div class="price-row"><div class="price-row-name">Virgin Coconut Oil Massage</div><div class="price-col"><span class="price-col-label">60 min</span><span class="price-col-value">990</span></div><div class="price-col"><span class="price-col-label">90 min</span><span class="price-col-value">1450</span></div><div class="price-col"><span class="price-col-label">120 min</span><span class="price-col-value">1800</span></div><div class="price-book-col"><button class="price-book-btn" onclick="bookTreatment(this)">Book &#x2192;</button></div></div>
-        <div class="price-row"><div class="price-row-name">CBD Aroma Massage</div><div class="price-col"><span class="price-col-label">60 min</span><span class="price-col-value">1290</span></div><div class="price-col"><span class="price-col-label">90 min</span><span class="price-col-value">1900</span></div><div class="price-col"><span class="price-col-label">120 min</span><span class="price-col-value">2400</span></div><div class="price-book-col"><button class="price-book-btn" onclick="bookTreatment(this)">Book &#x2192;</button></div></div>
-        <div class="price-row"><div class="price-row-name">Hot Stone Massage</div><div class="price-col"><span class="price-col-label">60 min</span><span class="price-col-value">1100</span></div><div class="price-col"><span class="price-col-label">90 min</span><span class="price-col-value">1500</span></div><div class="price-col"><span class="price-col-label">120 min</span><span class="price-col-value">1900</span></div><div class="price-book-col"><button class="price-book-btn" onclick="bookTreatment(this)">Book &#x2192;</button></div></div>
-        <div class="price-row"><div class="price-row-name">Aromatherapy + Gua Sha</div><div class="price-col"><span class="price-col-label">60 min</span><span class="price-col-value">790</span></div><div class="price-col"><span class="price-col-label">90 min</span><span class="price-col-value">1100</span></div><div class="price-col"><span class="price-col-label">120 min</span><span class="price-col-value">1500</span></div><div class="price-book-col"><button class="price-book-btn" onclick="bookTreatment(this)">Book &#x2192;</button></div></div>
-        <div class="price-row"><div class="price-row-name">Aromatherapy + Herbal Ball</div><div class="price-col"><span class="price-col-label">60 min</span><span style="font-size:18px;color:var(--text-light)">—</span></div><div class="price-col"><span class="price-col-label">90 min</span><span class="price-col-value">1200</span></div><div class="price-col"><span class="price-col-label">120 min</span><span class="price-col-value">1700</span></div><div class="price-book-col"><button class="price-book-btn" onclick="bookTreatment(this)">Book &#x2192;</button></div></div>
-        <div class="price-row"><div class="price-row-name">Aromatherapy + Bamboo Massage</div><div class="price-col"><span class="price-col-label">60 min</span><span style="font-size:18px;color:var(--text-light)">—</span></div><div class="price-col"><span class="price-col-label">90 min</span><span class="price-col-value">1500</span></div><div class="price-col"><span class="price-col-label">120 min</span><span class="price-col-value">1900</span></div><div class="price-book-col"><button class="price-book-btn" onclick="bookTreatment(this)">Book &#x2192;</button></div></div>
-        <div class="price-row"><div class="price-row-name">Rose Quartz Stone Therapy</div><div class="price-col"><span class="price-col-label">60 min</span><span class="price-col-value">1290</span></div><div class="price-col"><span class="price-col-label">90 min</span><span class="price-col-value">1900</span></div><div class="price-col"><span class="price-col-label">120 min</span><span class="price-col-value">2400</span></div><div class="price-book-col"><button class="price-book-btn" onclick="bookTreatment(this)">Book &#x2192;</button></div></div>
-        <div class="price-row"><div class="price-row-name">Aroma Oil for Kids</div><div class="price-col"><span class="price-col-label">60 min</span><span class="price-col-value">590</span></div><div class="price-col"><span class="price-col-label">90 min</span><span class="price-col-value">850</span></div><div class="price-col"><span class="price-col-label">120 min</span><span style="font-size:18px;color:var(--text-light)">—</span></div><div class="price-book-col"><button class="price-book-btn" onclick="bookTreatment(this)">Book &#x2192;</button></div></div>
+        <div class="price-row"><div class="price-row-name">4-Hands Aroma Massage</div><div class="price-col"><span class="price-col-label">60 min</span><span class="price-col-value">1600</span></div><div class="price-col"><span class="price-col-label">90 min</span><span class="price-col-value">2300</span></div><div class="price-col"><span class="price-col-label">120 min</span><span style="font-size:18px;color:var(--text-light)">—</span></div><div class="price-book-col"><a class="price-book-btn" href="/book">Book &#x2192;</a></div></div>
+        <div class="price-row"><div class="price-row-name">Oil Massage</div><div class="price-col"><span class="price-col-label">60 min</span><span class="price-col-value">690</span></div><div class="price-col"><span class="price-col-label">90 min</span><span class="price-col-value">1000</span></div><div class="price-col"><span class="price-col-label">120 min</span><span class="price-col-value">1300</span></div><div class="price-book-col"><a class="price-book-btn" href="/book">Book &#x2192;</a></div></div>
+        <div class="price-row"><div class="price-row-name">Aromatherapy Massage</div><div class="price-col"><span class="price-col-label">60 min</span><span class="price-col-value">790</span></div><div class="price-col"><span class="price-col-label">90 min</span><span class="price-col-value">1150</span></div><div class="price-col"><span class="price-col-label">120 min</span><span class="price-col-value">1400</span></div><div class="price-book-col"><a class="price-book-btn" href="/book">Book &#x2192;</a></div></div>
+        <div class="price-row"><div class="price-row-name">Aloe Vera Gel / Body Lotion Massage</div><div class="price-col"><span class="price-col-label">60 min</span><span class="price-col-value">790</span></div><div class="price-col"><span class="price-col-label">90 min</span><span class="price-col-value">1150</span></div><div class="price-col"><span class="price-col-label">120 min</span><span class="price-col-value">1400</span></div><div class="price-book-col"><a class="price-book-btn" href="/book">Book &#x2192;</a></div></div>
+        <div class="price-row"><div class="price-row-name">Hot Aromatherapy Massage</div><div class="price-col"><span class="price-col-label">60 min</span><span class="price-col-value">990</span></div><div class="price-col"><span class="price-col-label">90 min</span><span class="price-col-value">1450</span></div><div class="price-col"><span class="price-col-label">120 min</span><span class="price-col-value">1800</span></div><div class="price-book-col"><a class="price-book-btn" href="/book">Book &#x2192;</a></div></div>
+        <div class="price-row"><div class="price-row-name">Sports Massage</div><div class="price-col"><span class="price-col-label">60 min</span><span class="price-col-value">990</span></div><div class="price-col"><span class="price-col-label">90 min</span><span class="price-col-value">1450</span></div><div class="price-col"><span class="price-col-label">120 min</span><span class="price-col-value">1800</span></div><div class="price-book-col"><a class="price-book-btn" href="/book">Book &#x2192;</a></div></div>
+        <div class="price-row"><div class="price-row-name">Deep Tissue Massage</div><div class="price-col"><span class="price-col-label">60 min</span><span class="price-col-value">990</span></div><div class="price-col"><span class="price-col-label">90 min</span><span class="price-col-value">1450</span></div><div class="price-col"><span class="price-col-label">120 min</span><span class="price-col-value">1800</span></div><div class="price-book-col"><a class="price-book-btn" href="/book">Book &#x2192;</a></div></div>
+        <div class="price-row"><div class="price-row-name">Virgin Coconut Oil Massage</div><div class="price-col"><span class="price-col-label">60 min</span><span class="price-col-value">990</span></div><div class="price-col"><span class="price-col-label">90 min</span><span class="price-col-value">1450</span></div><div class="price-col"><span class="price-col-label">120 min</span><span class="price-col-value">1800</span></div><div class="price-book-col"><a class="price-book-btn" href="/book">Book &#x2192;</a></div></div>
+        <div class="price-row"><div class="price-row-name">CBD Aroma Massage</div><div class="price-col"><span class="price-col-label">60 min</span><span class="price-col-value">1290</span></div><div class="price-col"><span class="price-col-label">90 min</span><span class="price-col-value">1900</span></div><div class="price-col"><span class="price-col-label">120 min</span><span class="price-col-value">2400</span></div><div class="price-book-col"><a class="price-book-btn" href="/book">Book &#x2192;</a></div></div>
+        <div class="price-row"><div class="price-row-name">Hot Stone Massage</div><div class="price-col"><span class="price-col-label">60 min</span><span class="price-col-value">1100</span></div><div class="price-col"><span class="price-col-label">90 min</span><span class="price-col-value">1500</span></div><div class="price-col"><span class="price-col-label">120 min</span><span class="price-col-value">1900</span></div><div class="price-book-col"><a class="price-book-btn" href="/book">Book &#x2192;</a></div></div>
+        <div class="price-row"><div class="price-row-name">Aromatherapy + Gua Sha</div><div class="price-col"><span class="price-col-label">60 min</span><span class="price-col-value">790</span></div><div class="price-col"><span class="price-col-label">90 min</span><span class="price-col-value">1100</span></div><div class="price-col"><span class="price-col-label">120 min</span><span class="price-col-value">1500</span></div><div class="price-book-col"><a class="price-book-btn" href="/book">Book &#x2192;</a></div></div>
+        <div class="price-row"><div class="price-row-name">Aromatherapy + Herbal Ball</div><div class="price-col"><span class="price-col-label">60 min</span><span style="font-size:18px;color:var(--text-light)">—</span></div><div class="price-col"><span class="price-col-label">90 min</span><span class="price-col-value">1200</span></div><div class="price-col"><span class="price-col-label">120 min</span><span class="price-col-value">1700</span></div><div class="price-book-col"><a class="price-book-btn" href="/book">Book &#x2192;</a></div></div>
+        <div class="price-row"><div class="price-row-name">Aromatherapy + Bamboo Massage</div><div class="price-col"><span class="price-col-label">60 min</span><span style="font-size:18px;color:var(--text-light)">—</span></div><div class="price-col"><span class="price-col-label">90 min</span><span class="price-col-value">1500</span></div><div class="price-col"><span class="price-col-label">120 min</span><span class="price-col-value">1900</span></div><div class="price-book-col"><a class="price-book-btn" href="/book">Book &#x2192;</a></div></div>
+        <div class="price-row"><div class="price-row-name">Rose Quartz Stone Therapy</div><div class="price-col"><span class="price-col-label">60 min</span><span class="price-col-value">1290</span></div><div class="price-col"><span class="price-col-label">90 min</span><span class="price-col-value">1900</span></div><div class="price-col"><span class="price-col-label">120 min</span><span class="price-col-value">2400</span></div><div class="price-book-col"><a class="price-book-btn" href="/book">Book &#x2192;</a></div></div>
+        <div class="price-row"><div class="price-row-name">Aroma Oil for Kids</div><div class="price-col"><span class="price-col-label">60 min</span><span class="price-col-value">590</span></div><div class="price-col"><span class="price-col-label">90 min</span><span class="price-col-value">850</span></div><div class="price-col"><span class="price-col-label">120 min</span><span style="font-size:18px;color:var(--text-light)">—</span></div><div class="price-book-col"><a class="price-book-btn" href="/book">Book &#x2192;</a></div></div>
       </div>
     </div>
 
@@ -1939,9 +1937,9 @@ if(window.innerWidth <= 768){
     <div class="pricing-tab-content" id="tab-head">
       <p style="font-size:14px;color:var(--text-light);margin-bottom:24px;font-style:italic">Whether you're seeking relief from headaches, screen fatigue, neck stiffness, each treatment is tailored to your needs. Relax in a serene wellness sanctuary and experience improved circulation, enhanced mental clarity, and a profound sense of relaxation.</p>
       <div class="accordion-content-pricing">
-        <div class="price-row"><div class="price-row-name">Migraine Reliever Head Massage</div><div class="price-col"><span class="price-col-label">60 min</span><span class="price-col-value">790</span></div><div class="price-col"><span class="price-col-label">90 min</span><span class="price-col-value">1150</span></div><div class="price-col"><span class="price-col-label">120 min</span><span class="price-col-value">1400</span></div><div class="price-book-col"><button class="price-book-btn" onclick="bookTreatment(this)">Book &#x2192;</button></div></div>
-        <div class="price-row"><div class="price-row-name">Indian Head Massage with Coconut Oil</div><div class="price-col"><span class="price-col-label">60 min</span><span class="price-col-value">990</span></div><div class="price-col"><span class="price-col-label">90 min</span><span class="price-col-value">1450</span></div><div class="price-col"><span class="price-col-label">120 min</span><span class="price-col-value">1800</span></div><div class="price-book-col"><button class="price-book-btn" onclick="bookTreatment(this)">Book &#x2192;</button></div></div>
-        <div class="price-row"><div class="price-row-name">Ear Cleaning & Spa</div><div class="price-col"><span class="price-col-label">60 min</span><span class="price-col-value">790</span></div><div class="price-col"><span class="price-col-label">90 min</span><span style="font-size:18px;color:var(--text-light)">—</span></div><div class="price-col"><span class="price-col-label">120 min</span><span style="font-size:18px;color:var(--text-light)">—</span></div><div class="price-book-col"><button class="price-book-btn" onclick="bookTreatment(this)">Book &#x2192;</button></div></div>
+        <div class="price-row"><div class="price-row-name">Migraine Reliever Head Massage</div><div class="price-col"><span class="price-col-label">60 min</span><span class="price-col-value">790</span></div><div class="price-col"><span class="price-col-label">90 min</span><span class="price-col-value">1150</span></div><div class="price-col"><span class="price-col-label">120 min</span><span class="price-col-value">1400</span></div><div class="price-book-col"><a class="price-book-btn" href="/book">Book &#x2192;</a></div></div>
+        <div class="price-row"><div class="price-row-name">Indian Head Massage with Coconut Oil</div><div class="price-col"><span class="price-col-label">60 min</span><span class="price-col-value">990</span></div><div class="price-col"><span class="price-col-label">90 min</span><span class="price-col-value">1450</span></div><div class="price-col"><span class="price-col-label">120 min</span><span class="price-col-value">1800</span></div><div class="price-book-col"><a class="price-book-btn" href="/book">Book &#x2192;</a></div></div>
+        <div class="price-row"><div class="price-row-name">Ear Cleaning & Spa</div><div class="price-col"><span class="price-col-label">60 min</span><span class="price-col-value">790</span></div><div class="price-col"><span class="price-col-label">90 min</span><span style="font-size:18px;color:var(--text-light)">—</span></div><div class="price-col"><span class="price-col-label">120 min</span><span style="font-size:18px;color:var(--text-light)">—</span></div><div class="price-book-col"><a class="price-book-btn" href="/book">Book &#x2192;</a></div></div>
       </div>
     </div>
 
@@ -1949,9 +1947,9 @@ if(window.innerWidth <= 768){
     <div class="pricing-tab-content" id="tab-facial">
       <p style="font-size:14px;color:var(--text-light);margin-bottom:24px;font-style:italic">Each treatment is carefully tailored to improve circulation, stimulate lymphatic drainage, promote collagen production, and enhance overall skin health. Whether you are looking for a deep cleansing facial, a natural facial lifting treatment, or a luxurious skin rejuvenation experience, our facial therapies help leave your skin feeling refreshed, smoother, firmer, and visibly glowing.</p>
       <div class="accordion-content-pricing">
-        <div class="price-row"><div class="price-row-name">Anti Aging Facial Massage (Gua Sha)</div><div class="price-col"><span class="price-col-label">60 min</span><span class="price-col-value">790</span></div><div class="price-col"><span class="price-col-label">90 min</span><span class="price-col-value">1150</span></div><div class="price-col"><span class="price-col-label">120 min</span><span class="price-col-value">1400</span></div><div class="price-book-col"><button class="price-book-btn" onclick="bookTreatment(this)">Book &#x2192;</button></div></div>
-        <div class="price-row"><div class="price-row-name">Facial Massage with Charcoal Mask (Blackhead Removal)</div><div class="price-col"><span class="price-col-label">60 min</span><span class="price-col-value">990</span></div><div class="price-col"><span class="price-col-label">90 min</span><span class="price-col-value">1450</span></div><div class="price-col"><span class="price-col-label">120 min</span><span class="price-col-value">1800</span></div><div class="price-book-col"><button class="price-book-btn" onclick="bookTreatment(this)">Book &#x2192;</button></div></div>
-        <div class="price-row"><div class="price-row-name">Rose Quartz Gua Sha Facial</div><div class="price-col"><span class="price-col-label">60 min</span><span class="price-col-value">1290</span></div><div class="price-col"><span class="price-col-label">90 min</span><span class="price-col-value">1900</span></div><div class="price-col"><span class="price-col-label">120 min</span><span class="price-col-value">2400</span></div><div class="price-book-col"><button class="price-book-btn" onclick="bookTreatment(this)">Book &#x2192;</button></div></div>
+        <div class="price-row"><div class="price-row-name">Anti Aging Facial Massage (Gua Sha)</div><div class="price-col"><span class="price-col-label">60 min</span><span class="price-col-value">790</span></div><div class="price-col"><span class="price-col-label">90 min</span><span class="price-col-value">1150</span></div><div class="price-col"><span class="price-col-label">120 min</span><span class="price-col-value">1400</span></div><div class="price-book-col"><a class="price-book-btn" href="/book">Book &#x2192;</a></div></div>
+        <div class="price-row"><div class="price-row-name">Facial Massage with Charcoal Mask (Blackhead Removal)</div><div class="price-col"><span class="price-col-label">60 min</span><span class="price-col-value">990</span></div><div class="price-col"><span class="price-col-label">90 min</span><span class="price-col-value">1450</span></div><div class="price-col"><span class="price-col-label">120 min</span><span class="price-col-value">1800</span></div><div class="price-book-col"><a class="price-book-btn" href="/book">Book &#x2192;</a></div></div>
+        <div class="price-row"><div class="price-row-name">Rose Quartz Gua Sha Facial</div><div class="price-col"><span class="price-col-label">60 min</span><span class="price-col-value">1290</span></div><div class="price-col"><span class="price-col-label">90 min</span><span class="price-col-value">1900</span></div><div class="price-col"><span class="price-col-label">120 min</span><span class="price-col-value">2400</span></div><div class="price-book-col"><a class="price-book-btn" href="/book">Book &#x2192;</a></div></div>
       </div>
     </div>
 
@@ -1959,8 +1957,8 @@ if(window.innerWidth <= 768){
     <div class="pricing-tab-content" id="tab-scrub">
       <p style="font-size:14px;color:var(--text-light);margin-bottom:24px;font-style:italic">Treatments deeply hydrate, boost circulation for a natural glow, re-mineralise with 84 pure Himalayan trace minerals, and draw out impurities from the pores — leaving your skin silky smooth, thoroughly detoxified, and radiantly healthy from head to toe.</p>
       <div class="accordion-content-pricing">
-        <div class="price-row"><div class="price-row-name">Body Scrub</div><div class="price-col"><span class="price-col-label">60 min</span><span class="price-col-value">890</span></div><div class="price-col"><span class="price-col-label">90 min</span><span class="price-col-value">1300</span></div><div class="price-col"><span class="price-col-label">120 min</span><span style="font-size:18px;color:var(--text-light)">—</span></div><div class="price-book-col"><button class="price-book-btn" onclick="bookTreatment(this)">Book &#x2192;</button></div></div>
-        <div class="price-row"><div class="price-row-name">Himalayan Salt Scrub</div><div class="price-col"><span class="price-col-label">60 min</span><span class="price-col-value">990</span></div><div class="price-col"><span class="price-col-label">90 min</span><span class="price-col-value">1450</span></div><div class="price-col"><span class="price-col-label">120 min</span><span style="font-size:18px;color:var(--text-light)">—</span></div><div class="price-book-col"><button class="price-book-btn" onclick="bookTreatment(this)">Book &#x2192;</button></div></div>
+        <div class="price-row"><div class="price-row-name">Body Scrub</div><div class="price-col"><span class="price-col-label">60 min</span><span class="price-col-value">890</span></div><div class="price-col"><span class="price-col-label">90 min</span><span class="price-col-value">1300</span></div><div class="price-col"><span class="price-col-label">120 min</span><span style="font-size:18px;color:var(--text-light)">—</span></div><div class="price-book-col"><a class="price-book-btn" href="/book">Book &#x2192;</a></div></div>
+        <div class="price-row"><div class="price-row-name">Himalayan Salt Scrub</div><div class="price-col"><span class="price-col-label">60 min</span><span class="price-col-value">990</span></div><div class="price-col"><span class="price-col-label">90 min</span><span class="price-col-value">1450</span></div><div class="price-col"><span class="price-col-label">120 min</span><span style="font-size:18px;color:var(--text-light)">—</span></div><div class="price-book-col"><a class="price-book-btn" href="/book">Book &#x2192;</a></div></div>
       </div>
     </div>
   </div>
@@ -2845,7 +2843,7 @@ if(window.innerWidth <= 768){
       <a href="#signature" class="f2-link"><span class="f2-link-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l1.5 5L19 9.5 13.5 11 12 16l-1.5-5L5 9.5 10.5 8z"/></svg></span>Signature Treatment<span class="f2-chev">&#8250;</span></a>
       <a href="#gallery" class="f2-link"><span class="f2-link-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg></span>Gallery<span class="f2-chev">&#8250;</span></a>
       <a href="#testimonials" class="f2-link"><span class="f2-link-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg></span>Reviews<span class="f2-chev">&#8250;</span></a>
-      <a href="#booking" class="f2-link"><span class="f2-link-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></span>Book Now<span class="f2-chev">&#8250;</span></a>
+      <a href="/book" class="f2-link"><span class="f2-link-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></span>Book Now<span class="f2-chev">&#8250;</span></a>
       <a href="#trust" class="f2-link"><span class="f2-link-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg></span>Why Us<span class="f2-chev">&#8250;</span></a>
       <a href="#packages" class="f2-link"><span class="f2-link-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg></span>Special Offers<span class="f2-chev">&#8250;</span></a>
       <a href="#contact" class="f2-link"><span class="f2-link-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg></span>Contact<span class="f2-chev">&#8250;</span></a>
@@ -2995,22 +2993,23 @@ function scrollToSection(id) {
 }
 
 function addToCart(serviceName, btn) {
-  // Reset previous selected button
+  var isTouch = ('ontouchstart' in window) || (navigator.maxTouchPoints > 0);
+  if (isTouch) {
+    openMobPopup(serviceName);
+    return;
+  }
+  // Desktop: reset previous selected button
   if (lastBookBtn && lastBookBtn !== btn) {
     lastBookBtn.classList.remove('selected');
     lastBookBtn.textContent = 'Book This →';
   }
   cartService = serviceName;
   lastBookBtn = btn;
-  // Update button state
   btn.classList.add('selected');
   btn.textContent = 'Selected!';
-  // Show cart badge
   const badge = document.getElementById('cartBadge');
   if (badge) { badge.classList.add('visible'); badge.textContent = '1'; }
-  // Show toast
   showCartToast('Added: ' + serviceName);
-  // Scroll to booking after short delay and pre-fill service
   setTimeout(() => {
     const bookingSection = document.getElementById('booking');
     if (bookingSection) scrollToSection('booking');
@@ -3122,52 +3121,20 @@ document.querySelectorAll('.pricing-tab-btn').forEach(btn => {
 });
 
 // ===== PRICING TABLE BOOK BUTTON =====
-function bookTreatment(btn) {
-  const row = btn.closest('.price-row');
-  const name = row.querySelector('.price-row-name').textContent.trim();
-
-  // On mobile: open booking popup instantly
-  if (window.innerWidth <= 768) {
-    openMobPopup(name);
-    return;
+function bookTreatment(e, btn) {
+  e.stopPropagation();
+  e.preventDefault();
+  // Support .price-row tables, <tr> package tables, and signature tables
+  var nameEl = null;
+  var row = btn.closest('.price-row');
+  if (row) {
+    nameEl = row.querySelector('.price-row-name');
+  } else {
+    var tr = btn.closest('tr');
+    if (tr) nameEl = tr.querySelector('.pkg-name, .sig-name, td:first-child');
   }
-
-  // Auto-select matching option in booking form
-  const sel = document.getElementById('f-service');
-  let matched = false;
-  for (let i = 0; i < sel.options.length; i++) {
-    if (sel.options[i].value === name) {
-      sel.selectedIndex = i;
-      matched = true;
-      break;
-    }
-  }
-  // If no exact match, try partial match
-  if (!matched) {
-    for (let i = 0; i < sel.options.length; i++) {
-      if (sel.options[i].value.toLowerCase().includes(name.toLowerCase()) ||
-          name.toLowerCase().includes(sel.options[i].value.toLowerCase())) {
-        sel.selectedIndex = i;
-        break;
-      }
-    }
-  }
-
-  // Scroll to booking section smoothly
-  const bookingSection = document.getElementById('booking');
-  scrollToSection('booking');
-
-  // Flash highlight on the select to draw attention
-  setTimeout(function() {
-    sel.style.transition = 'box-shadow 0.3s ease, border-color 0.3s ease';
-    sel.style.borderColor = 'var(--gold)';
-    sel.style.boxShadow = '0 0 0 3px rgba(201,169,110,0.25)';
-    sel.focus();
-    setTimeout(function() {
-      sel.style.boxShadow = '';
-      sel.style.borderColor = '';
-    }, 2000);
-  }, 700);
+  var name = nameEl ? nameEl.textContent.trim() : 'Spa Treatment';
+  openMobPopup(name);
 }
 
 // ===== TABS =====
@@ -3440,7 +3407,7 @@ function initPriceBtns() {
     const text = td.textContent.trim();
     if(text && text !== '–' && !td.querySelector('.price-btn')) {
       td.dataset.price = text; // store original number
-      td.innerHTML = `<a href="#booking" class="price-btn">${text} THB</a>`;
+      td.innerHTML = `<a href="/book" class="price-btn">${text} THB</a>`;
       td.style.padding = '10px 16px';
     }
   });
@@ -3466,7 +3433,7 @@ function initPriceBtns() {
         if(raw && raw !== '–' && raw !== '') {
           dursHtml += `<div class="price-card-dur">
             <span class="price-card-min">${header}</span>
-            <a href="#booking" class="price-btn">${raw} THB</a>
+            <a href="/book" class="price-btn">${raw} THB</a>
           </div>`;
         }
       });
@@ -3966,87 +3933,162 @@ document.addEventListener('click', function(e){
 </script>
 
 <!-- MOBILE BOOKING POPUP -->
-<div id="mob-popup" style="display:none;position:fixed;inset:0;z-index:99999;background:rgba(0,0,0,0.6);align-items:flex-end;justify-content:center">
-  <div id="mob-popup-box" style="background:#fff;width:100%;max-height:92vh;overflow-y:auto;border-radius:20px 20px 0 0;padding:20px 18px 40px;transform:translateY(100%);transition:transform 0.32s cubic-bezier(0.32,0.72,0,1)">
-    <!-- Handle bar -->
-    <div style="width:36px;height:4px;background:#ddd;border-radius:2px;margin:0 auto 18px"></div>
-    <!-- Header -->
-    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:18px">
-      <div>
-        <div style="font-size:10px;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:#C9A96E;margin-bottom:4px">Book Treatment</div>
-        <div id="mob-popup-service" style="font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:600;color:#1a1a1a;line-height:1.2"></div>
-      </div>
-      <button onclick="closeMobPopup()" style="width:36px;height:36px;border-radius:50%;border:none;background:#f5f0ea;font-size:20px;cursor:pointer;color:#666;display:flex;align-items:center;justify-content:center;flex-shrink:0">✕</button>
+<!-- MOBILE BOOKING PAGE (full-screen, slides in from right) -->
+<div id="mob-book-page" style="visibility:hidden;pointer-events:none;position:fixed;top:0;left:0;right:0;bottom:0;z-index:99999;overflow-y:auto;-webkit-overflow-scrolling:touch;background:#f7f3ee">
+
+  <!-- Top bar -->
+  <div style="position:sticky;top:0;z-index:2;background:#fff;display:flex;align-items:center;padding:14px 16px;border-bottom:1px solid #ece7de;gap:12px">
+    <button onclick="closeMobPage()" style="width:38px;height:38px;border-radius:50%;border:none;background:#f5f0ea;font-size:20px;cursor:pointer;color:#2c2418;flex-shrink:0;display:flex;align-items:center;justify-content:center">&#8592;</button>
+    <div>
+      <div style="font-size:10px;font-weight:700;letter-spacing:0.15em;text-transform:uppercase;color:#C9A96E">Book Treatment</div>
+      <div id="mob-page-service" style="font-family:'Cormorant Garamond',serif;font-size:18px;font-weight:600;color:#2c2418;line-height:1.2"></div>
     </div>
-    <!-- Form -->
-    <form id="mob-popup-form" onsubmit="submitMobPopup(event)">
-      <div style="margin-bottom:14px">
-        <label style="display:block;font-size:11px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:#888;margin-bottom:6px">Your Name *</label>
-        <input id="mpf-name" required type="text" placeholder="Full name" style="width:100%;padding:14px;border:1.5px solid #e0d8ce;border-radius:10px;font-size:16px;font-family:inherit;outline:none;box-sizing:border-box">
-      </div>
-      <div style="margin-bottom:14px">
-        <label style="display:block;font-size:11px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:#888;margin-bottom:6px">Phone / WhatsApp *</label>
-        <input id="mpf-phone" required type="tel" placeholder="+66 or local number" style="width:100%;padding:14px;border:1.5px solid #e0d8ce;border-radius:10px;font-size:16px;font-family:inherit;outline:none;box-sizing:border-box">
-      </div>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px">
-        <div>
-          <label style="display:block;font-size:11px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:#888;margin-bottom:6px">Date</label>
-          <input id="mpf-date" type="date" style="width:100%;padding:14px;border:1.5px solid #e0d8ce;border-radius:10px;font-size:15px;font-family:inherit;outline:none;box-sizing:border-box">
-        </div>
-        <div>
-          <label style="display:block;font-size:11px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:#888;margin-bottom:6px">Time</label>
-          <input id="mpf-time" type="time" style="width:100%;padding:14px;border:1.5px solid #e0d8ce;border-radius:10px;font-size:15px;font-family:inherit;outline:none;box-sizing:border-box">
-        </div>
-      </div>
-      <div style="margin-bottom:20px">
-        <label style="display:block;font-size:11px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:#888;margin-bottom:6px">Notes (optional)</label>
-        <textarea id="mpf-notes" rows="2" placeholder="Any special requests..." style="width:100%;padding:14px;border:1.5px solid #e0d8ce;border-radius:10px;font-size:15px;font-family:inherit;outline:none;resize:none;box-sizing:border-box"></textarea>
-      </div>
-      <button type="submit" style="width:100%;padding:16px;background:linear-gradient(135deg,#C9A96E,#b8973a);color:#fff;border:none;border-radius:12px;font-size:16px;font-weight:700;letter-spacing:0.05em;cursor:pointer;font-family:inherit">Send Booking Request via WhatsApp</button>
-    </form>
   </div>
+
+  <!-- Decorative header band -->
+  <div style="background:linear-gradient(135deg,#C9A96E 0%,#e8d5a3 50%,#C9A96E 100%);padding:28px 20px;text-align:center">
+    <svg viewBox="0 0 80 75" style="width:52px;height:52px;margin-bottom:10px" fill="none">
+      <path d="M40 2 L41.5 7 L46.5 8.2 L41.5 9.4 L40 14 L38.5 9.4 L33.5 8.2 L38.5 7 Z" fill="#fff"/>
+      <path d="M10 70 A 31 31 0 1 1 70 70" stroke="#fff" stroke-width="2" fill="none" stroke-linecap="round"/>
+      <path d="M40 35 C 37 43 36.5 53 40 60 C 43.5 53 43 43 40 35 Z" fill="rgba(255,255,255,0.85)"/>
+      <path d="M33 39 C 29 48 32 57 40 60 C 38 52 35 46 33 39 Z" fill="rgba(255,255,255,0.7)"/>
+      <path d="M47 39 C 51 48 48 57 40 60 C 42 52 45 46 47 39 Z" fill="rgba(255,255,255,0.7)"/>
+    </svg>
+    <div style="font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:500;color:#fff;letter-spacing:0.04em">Crystal Aura</div>
+    <div style="font-size:11px;color:rgba(255,255,255,0.85);letter-spacing:0.12em;text-transform:uppercase;margin-top:3px">Massage &amp; Spa</div>
+  </div>
+
+  <!-- Form card -->
+  <div style="background:#fff;margin:16px;border-radius:16px;padding:22px 18px;box-shadow:0 2px 12px rgba(0,0,0,0.07)">
+
+    <!-- Step indicator -->
+    <div style="display:flex;align-items:center;gap:8px;margin-bottom:22px">
+      <div style="width:28px;height:28px;border-radius:50%;background:#C9A96E;color:#fff;font-size:13px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0">1</div>
+      <div style="font-size:13px;font-weight:600;color:#2c2418">Your Details</div>
+      <div style="flex:1;height:1px;background:#ece7de"></div>
+      <div style="width:28px;height:28px;border-radius:50%;background:#ece7de;color:#999;font-size:13px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0">2</div>
+      <div style="font-size:13px;color:#999">Schedule</div>
+    </div>
+
+    <div style="margin-bottom:16px">
+      <label style="display:block;font-size:11px;font-weight:700;color:#b07c3e;text-transform:uppercase;letter-spacing:0.1em;margin-bottom:7px">Full Name *</label>
+      <input id="mbp-name" type="text" placeholder="e.g. Sarah Johnson" autocomplete="name"
+        style="width:100%;padding:15px 14px;border:1.5px solid #ddd;border-radius:12px;font-size:16px;outline:none;box-sizing:border-box;background:#fafafa;-webkit-appearance:none"
+        onfocus="this.style.borderColor='#C9A96E'" onblur="this.style.borderColor='#ddd'">
+    </div>
+
+    <div style="margin-bottom:20px">
+      <label style="display:block;font-size:11px;font-weight:700;color:#b07c3e;text-transform:uppercase;letter-spacing:0.1em;margin-bottom:7px">Phone / WhatsApp *</label>
+      <input id="mbp-phone" type="tel" placeholder="+66 or local number" autocomplete="tel"
+        style="width:100%;padding:15px 14px;border:1.5px solid #ddd;border-radius:12px;font-size:16px;outline:none;box-sizing:border-box;background:#fafafa;-webkit-appearance:none"
+        onfocus="this.style.borderColor='#C9A96E'" onblur="this.style.borderColor='#ddd'">
+    </div>
+
+    <!-- Divider -->
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:20px">
+      <div style="flex:1;height:1px;background:#ece7de"></div>
+      <div style="display:flex;align-items:center;gap:8px">
+        <div style="width:28px;height:28px;border-radius:50%;background:#C9A96E;color:#fff;font-size:13px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0">2</div>
+        <div style="font-size:13px;font-weight:600;color:#2c2418">Schedule</div>
+      </div>
+      <div style="flex:1;height:1px;background:#ece7de"></div>
+    </div>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px">
+      <div>
+        <label style="display:block;font-size:11px;font-weight:700;color:#b07c3e;text-transform:uppercase;letter-spacing:0.1em;margin-bottom:7px">Date</label>
+        <input id="mbp-date" type="date"
+          style="width:100%;padding:14px 10px;border:1.5px solid #ddd;border-radius:12px;font-size:14px;outline:none;box-sizing:border-box;background:#fafafa;-webkit-appearance:none"
+          onfocus="this.style.borderColor='#C9A96E'" onblur="this.style.borderColor='#ddd'">
+      </div>
+      <div>
+        <label style="display:block;font-size:11px;font-weight:700;color:#b07c3e;text-transform:uppercase;letter-spacing:0.1em;margin-bottom:7px">Time</label>
+        <input id="mbp-time" type="time"
+          style="width:100%;padding:14px 10px;border:1.5px solid #ddd;border-radius:12px;font-size:14px;outline:none;box-sizing:border-box;background:#fafafa;-webkit-appearance:none"
+          onfocus="this.style.borderColor='#C9A96E'" onblur="this.style.borderColor='#ddd'">
+      </div>
+    </div>
+
+    <div style="margin-bottom:24px">
+      <label style="display:block;font-size:11px;font-weight:700;color:#b07c3e;text-transform:uppercase;letter-spacing:0.1em;margin-bottom:7px">Special Requests</label>
+      <textarea id="mbp-notes" rows="3" placeholder="Allergies, preferences, or anything we should know..."
+        style="width:100%;padding:14px;border:1.5px solid #ddd;border-radius:12px;font-size:15px;outline:none;resize:none;box-sizing:border-box;background:#fafafa;-webkit-appearance:none;font-family:inherit"
+        onfocus="this.style.borderColor='#C9A96E'" onblur="this.style.borderColor='#ddd'"></textarea>
+    </div>
+
+    <!-- Submit button -->
+    <button onclick="submitMobPage()"
+      style="width:100%;padding:17px;background:linear-gradient(135deg,#b07c3e,#C9A96E);color:#fff;border:none;border-radius:14px;font-size:16px;font-weight:700;letter-spacing:0.04em;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:10px;-webkit-tap-highlight-color:transparent">
+      <svg viewBox="0 0 24 24" style="width:20px;height:20px;fill:#fff"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.138.558 4.14 1.532 5.874L.057 23.273c-.07.268.162.5.43.43l5.399-1.475A11.94 11.94 0 0 0 12 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 22c-1.887 0-3.66-.5-5.197-1.374l-.371-.22-3.841 1.049 1.02-3.728-.24-.385A9.966 9.966 0 0 1 2 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10z"/></svg>
+      Send via WhatsApp
+    </button>
+
+    <p style="text-align:center;font-size:12px;color:#aaa;margin:14px 0 0;line-height:1.5">We'll confirm your booking via WhatsApp.<br>Opens WhatsApp with your details pre-filled.</p>
+  </div>
+
+  <div style="height:30px"></div>
 </div>
 
 <script>
-function openMobPopup(serviceName) {
-  var popup = document.getElementById('mob-popup');
-  var box = document.getElementById('mob-popup-box');
-  document.getElementById('mob-popup-service').textContent = serviceName;
-  popup.style.display = 'flex';
-  document.body.style.overflow = 'hidden';
-  setTimeout(function(){ box.style.transform = 'translateY(0)'; }, 10);
+function openMobPopup(svc) {
+  var page = document.getElementById('mob-book-page');
+  var svcEl = document.getElementById('mob-page-service');
+  svcEl.textContent = svc || '';
+  svcEl.parentElement.style.display = svc ? 'block' : 'none';
+  document.getElementById('mbp-name').value = '';
+  document.getElementById('mbp-phone').value = '';
+  document.getElementById('mbp-date').value = '';
+  document.getElementById('mbp-time').value = '';
+  document.getElementById('mbp-notes').value = '';
+  page.scrollTop = 0;
+  page.style.visibility = 'visible';
+  page.style.pointerEvents = 'auto';
 }
-function closeMobPopup() {
-  var box = document.getElementById('mob-popup-box');
-  box.style.transform = 'translateY(100%)';
-  setTimeout(function(){
-    document.getElementById('mob-popup').style.display = 'none';
-    document.body.style.overflow = '';
-  }, 320);
+function closeMobPage() {
+  var page = document.getElementById('mob-book-page');
+  page.style.visibility = 'hidden';
+  page.style.pointerEvents = 'none';
 }
-function submitMobPopup(e) {
-  e.preventDefault();
-  var service = document.getElementById('mob-popup-service').textContent;
-  var name = document.getElementById('mpf-name').value;
-  var phone = document.getElementById('mpf-phone').value;
-  var date = document.getElementById('mpf-date').value;
-  var time = document.getElementById('mpf-time').value;
-  var notes = document.getElementById('mpf-notes').value;
-  // Save to capture.php silently
-  fetch('/capture.php', {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({name:name,phone:phone,service:service,date:date,time:time,channel:'whatsapp',notes:notes})}).catch(function(){});
-  // Build WhatsApp message
-  var msg = 'Hi Crystal Aura! I would like to book:\n\n';
-  msg += '🌸 Service: ' + service + '\n';
-  msg += '👤 Name: ' + name + '\n';
-  msg += '📱 Phone: ' + phone + '\n';
-  if (date) msg += '📅 Date: ' + date + '\n';
-  if (time) msg += '🕐 Time: ' + time + '\n';
-  if (notes) msg += '📝 Notes: ' + notes + '\n';
-  window.open('https://wa.me/66959932861?text=' + encodeURIComponent(msg), '_blank');
-  closeMobPopup();
+function submitMobPage() {
+  var name = document.getElementById('mbp-name').value.trim();
+  var phone = document.getElementById('mbp-phone').value.trim();
+  if (!name || !phone) { alert('Please enter your name and phone number.'); return; }
+  var svc = document.getElementById('mob-page-service').textContent;
+  var date = document.getElementById('mbp-date').value;
+  var time = document.getElementById('mbp-time').value;
+  var notes = document.getElementById('mbp-notes').value.trim();
+  var msg = 'Hi Crystal Aura! I would like to book:\n';
+  msg += 'Service: ' + svc + '\n';
+  msg += 'Name: ' + name + '\n';
+  msg += 'Phone: ' + phone + '\n';
+  if (date) msg += 'Date: ' + date + '\n';
+  if (time) msg += 'Time: ' + time + '\n';
+  if (notes) msg += 'Notes: ' + notes;
+  closeMobPage();
+  window.location.href = 'https://wa.me/66959932861?text=' + encodeURIComponent(msg);
 }
-document.getElementById('mob-popup').addEventListener('click', function(e){
-  if (e.target === this) closeMobPopup();
+
+// Set correct /book?service= URL on every price-book-btn link
+document.querySelectorAll('.price-row').forEach(function(row) {
+  var a = row.querySelector('.price-book-btn');
+  var nameEl = row.querySelector('.price-row-name');
+  if (a && nameEl) a.href = '/book?service=' + encodeURIComponent(nameEl.textContent.trim());
+});
+document.querySelectorAll('tr').forEach(function(tr) {
+  var a = tr.querySelector('.price-book-btn');
+  var nameEl = tr.querySelector('.pkg-name, .sig-name');
+  if (a && nameEl) a.href = '/book?service=' + encodeURIComponent(nameEl.textContent.trim());
+});
+// service-book-btn cards
+document.querySelectorAll('.service-book-btn').forEach(function(btn) {
+  var name = btn.getAttribute('onclick').match(/addToCart\('([^']+)'/);
+  if (name) {
+    var a = document.createElement('a');
+    a.className = btn.className;
+    a.href = '/book?service=' + encodeURIComponent(name[1]);
+    a.textContent = btn.textContent;
+    btn.parentNode.replaceChild(a, btn);
+  }
 });
 </script>
 </body>

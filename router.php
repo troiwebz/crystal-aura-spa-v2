@@ -11,6 +11,7 @@ if ($uri === '/robots.txt')  { require __DIR__.'/robots.php';  return true; }
 if (strpos($uri, '/data/') === 0) { http_response_code(403); return true; }
 if ($uri === '/blog' || $uri === '/blog/') { require __DIR__.'/blog.php'; return true; }
 if (preg_match('#^/blog/([a-z0-9-]+)/?$#', $uri, $m)) { $_GET['slug'] = $m[1]; require __DIR__.'/blog.php'; return true; }
+if ($uri === '/book') { require __DIR__.'/book.php'; return true; }
 if ($uri === '/') { require __DIR__.'/index.php'; return true; }
 // existing file? serve it; else custom 404
 if (is_file(__DIR__ . $uri)) return false;
